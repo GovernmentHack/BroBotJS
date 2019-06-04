@@ -7,7 +7,7 @@
     "test": "ts-mocha -p tsconfig.json test/**/*.test.ts",
     "start": "npm run build:live",
     "build": "tsc -p .",
-    "build:live": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/GovernmentHack/BroBotJS#readme",
   "dependencies": {
+    "discord.js": "github:discordjs/discord.js",
     "express": "^4.17.1",
     "node-fetch": "^2.6.0"
   },

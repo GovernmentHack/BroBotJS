@@ -4,8 +4,8 @@ import * as secret from '../token.json'
 const client = new Discord.Client();
 
 const bot = {
-  "client": client,
-  "log": []
+  client,
+  log: []
 }
 
 bot.client.on('ready', () => {

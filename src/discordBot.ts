@@ -1,5 +1,6 @@
 import Discord from 'discord.js'
 import * as secret from '../token.json'
+import onMessage from './onMessage'
 
 const client = new Discord.Client();
 
@@ -14,12 +15,7 @@ bot.client.on('ready', () => {
   }
 });
 
-bot.client.on('message', (msg) => {
-  if (msg.content === 'ping') {
-    msg.channel.send('pong');
-    bot.log.push('pong')
-  }
-});
+bot.client.on('message', onMessage);
 
 bot.client.login(secret.token);
 

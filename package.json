@@ -4,7 +4,7 @@
   "description": "A chat bot and API interface",
   "main": "index.js",
   "scripts": {
-    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts",
+    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts --exit",
     "start": "npm run build:live",
     "build": "tsc -p .",
     "build:live": "nodemon --watch 'src/**/*.ts' --exec ts-node src/index.ts"
@@ -39,6 +39,7 @@
     "rimraf": "^2.6.3",
     "sinon": "^7.3.2",
     "ts-mocha": "^6.0.0",
+    "ts-mockito": "^2.3.1",
     "ts-node": "^8.2.0",
     "typescript": "^3.5.1"
   }

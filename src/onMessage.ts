@@ -1,13 +1,10 @@
 import { Message } from "discord.js";
 
 const onMessage = (msg : Message) => {
-  const clientId = msg.client.user.id
-  const firstMentionId = 
-    msg.mentions &&
-    msg.mentions.members &&
-    msg.mentions.members.first() &&
-    msg.mentions.members.first().id
-  if (firstMentionId === clientId) {
+  const clientId : string = msg.client.user.id
+  let clientWasMentioned : boolean = msg.mentions && msg.mentions.members && !!msg.mentions.members.get(clientId)
+
+  if(clientWasMentioned) {
     msg.channel.send('...You rang?')
   }
 }

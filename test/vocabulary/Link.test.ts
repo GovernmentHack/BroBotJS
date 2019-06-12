@@ -9,8 +9,9 @@ const expect = chai.expect
 describe("vocabulary", () => {
   let messages = new Collection<string, Message>()
   let messsageGenerator = new mockMessageGenerator()
-  let existingNode : LinkNode
   let link : Link
+  let node1 : LinkNode
+  let node2 : LinkNode 
 
   beforeEach(() => {
     let message1 = messsageGenerator.getMessage({cleanContent: "I am a message from someone."})
@@ -23,18 +24,29 @@ describe("vocabulary", () => {
     messages.set("00002", message3)
     messages.set("00003", message4)
 
-    existingNode = {
+    node1 = {
       weight: 1,
       probability: [0,0],
       next: "test"
     }
 
+    node2 = {
+      probability: [0,0],
+      weight: 3,
+      next: "test2"
+    }
+    
     link = new Link({ first: "first", second: "second"})
+
+    link.nodes.set("test", node1)
+    link.nodes.set("test2", node2)
+    link.weightTotal = 4
+
   })
 
   describe("addNode()", () => {
     it("adds new node if next doesn't exist", () => {
-      const expectedNode = existingNode
+      const expectedNode = node1
       link.addNode("test")
   
       expect(link.nodes.get("test")).to.eql(expectedNode)
@@ -46,7 +58,7 @@ describe("vocabulary", () => {
         probability: [0,0],
         next: "test"
       }
-      link.nodes.set("test", existingNode)
+      link.nodes.set("test", node1)
       link.addNode("test")
   
       expect(link.nodes.get("test")).to.eql(expectedNode)
@@ -54,22 +66,6 @@ describe("vocabulary", () => {
   })
 
   describe("updateNodeProbabilities()", () => {
-    let node1 : LinkNode
-    let node2 : LinkNode 
-    
-    beforeEach(() => {
-      node1 = existingNode
-      node2 = {
-        probability: [0,0],
-        weight: 3,
-        next: "test2"
-      }
-  
-      link.nodes.set("test", node1)
-      link.nodes.set("test2", node2)
-      link.weightTotal = 4
-    })
-
     it("correctly weights probabilities", () => {
       const expectedNode1 : LinkNode = {
         ...node1,
@@ -88,21 +84,7 @@ describe("vocabulary", () => {
   })
 
   describe("getNextLinkKey()", () => {
-    let node1 : LinkNode
-    let node2 : LinkNode 
-    
     beforeEach(() => {
-      node1 = existingNode
-      node2 = {
-        probability: [0,0],
-        weight: 3,
-        next: "test2"
-      }
-  
-      link.nodes.set("test", node1)
-      link.nodes.set("test2", node2)
-      link.weightTotal = 4
-
       link.updateNodeProbabilities()
     })
 

@@ -1,6 +1,6 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '../src/index'
+import app, {discordBot} from '../../src/server/app'
 
 const expect = chai.expect
 

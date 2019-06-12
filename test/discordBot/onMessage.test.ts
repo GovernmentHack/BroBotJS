@@ -1,6 +1,6 @@
 import sinon, { SinonSpy} from 'sinon'
 import chai from 'chai'
-import onMessage from '../src/onMessage'
+import onMessageHandler from '../../src/discordBot/onMessageHandler'
 import { Message } from 'discord.js'
 import mockMessageGenerator from './mockMessageGenerator'
 
@@ -23,7 +23,7 @@ describe("onMessage", () => {
 
     sendSpy = sinon.spy(msg.channel, "send")
 
-    onMessage(msg)
+    onMessageHandler(msg)
     expect(sendSpy.calledOnce).to.be.true
   })
 
@@ -32,7 +32,7 @@ describe("onMessage", () => {
 
     sendSpy = sinon.spy(msg.channel, "send")
 
-    onMessage(msg)
+    onMessageHandler(msg)
     expect(sendSpy.notCalled).to.be.true
   })
 
@@ -41,7 +41,7 @@ describe("onMessage", () => {
 
     sendSpy = sinon.spy(msg.channel, "send")
 
-    onMessage(msg)
+    onMessageHandler(msg)
     expect(sendSpy.notCalled).to.be.true
   })
 })

@@ -1,10 +1,10 @@
 
-interface linkKey {
+export interface linkKey {
   first: string
   second: string
 }
 
-interface LinkNode {
+export interface LinkNode {
   weight: number, 
   probability: [number, number]
   next: string
@@ -16,8 +16,8 @@ class Link {
   weightTotal: number
   dirty: boolean
 
-  constructor(first: string, second: string) {
-    this.key = {first, second}
+  constructor(key : linkKey) {
+    this.key = key
     this.nodes = new Map<string, LinkNode>()
     this.weightTotal = 0
     this.dirty = false
@@ -42,7 +42,7 @@ class Link {
     let counter = 0
     this.nodes.forEach((node) => {
       node.probability[0] = counter
-      counter += (this.weightTotal/node.weight)
+      counter += (node.weight/this.weightTotal)
       node.probability[1] = counter
     })
     this.dirty = false
@@ -64,3 +64,5 @@ class Link {
   }
 
 } 
+
+export default Link

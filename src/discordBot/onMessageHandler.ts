@@ -1,6 +1,6 @@
 import { Message } from "discord.js";
 
-const onMessage = (msg : Message) => {
+const onMessageHandler = (msg : Message) => {
   let clientWasMentioned : boolean = msg.isMemberMentioned(msg.client.user)
 
   if(clientWasMentioned) {
@@ -8,4 +8,4 @@ const onMessage = (msg : Message) => {
   }
 }
 
-export default onMessage
+export default onMessageHandler

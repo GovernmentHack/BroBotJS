@@ -26,9 +26,11 @@ const getTokensFromString = (sentence: string) : string[] => {
 
 class Chain {
   private links : Map<string, Link>
+  private startingLinks : Map<string, Link>
   
   constructor() {
     this.links = new Map<string, Link>()
+    this.startingLinks = new Map<string, Link>()
   }
   
   insertLink(newLinkKey: ILinkKey, next: string) {
@@ -42,8 +44,23 @@ class Chain {
     }
   }
 
+  insertStartingLink(newLinkKey: ILinkKey, next: string) {
+    if(this.startingLinks.has(linkKeyToString(newLinkKey))){
+      this.startingLinks.get(linkKeyToString(newLinkKey)).insertNode(next)
+    }
+    else {
+      const linkToAdd = new Link(newLinkKey)
+      linkToAdd.insertNode(next)
+      this.startingLinks.set(linkKeyToString(newLinkKey), linkToAdd)
+    }
+  }
+
   getLink(key : ILinkKey) : Link {
     return this.links.get(linkKeyToString(key))
+  }
+
+  getStartingLink(key : ILinkKey) : Link {
+    return this.startingLinks.get(linkKeyToString(key))
   }
 
   getChainSize() : number {
@@ -58,17 +75,32 @@ class Chain {
 
   parseSentence(sentence: string) {
     const tokens = getTokensFromString(sentence)
-    for (let index = 0; index < tokens.length - 1; index++) {
-      if(index + 2 === tokens.length) {
-        this.insertLink({ first: tokens[index], second: tokens[index+1] }, "")
-        console.log(this.links.values())
-      }
-      else {
-        this.insertLink({ first: tokens[index], second: tokens[index+1] }, tokens[index+2])
-        console.log(this.links.values())
+    if (tokens.length === 1){
+      this.insertStartingLink({first: tokens[0], second: ""}, "")
+      return
+    }
+    if (tokens.length === 2) {
+      this.insertStartingLink({first: tokens[0], second: tokens[1]}, "")
+      return
+    }
+    else {
+      this.insertStartingLink({first: tokens[0], second: tokens[1]}, tokens[2])
+      for (let index = 1; index < tokens.length - 1; index++) {
+        if(index + 2 === tokens.length) {
+          this.insertLink({ first: tokens[index], second: tokens[index+1] }, "")
+        }
+        else {
+          this.insertLink({ first: tokens[index], second: tokens[index+1] }, tokens[index+2])
+        }
       }
     }
   }
+
+  // getSentence() : string {
+  //   let tempSentence : string = ""
+
+
+  // }
 }
 
 export default Chain

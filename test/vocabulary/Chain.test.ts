@@ -1,9 +1,8 @@
 import { Collection, Message } from "discord.js";
 import mockMessageGenerator from "../discordBot/mockMessageGenerator";
 import Chain from '../../src/vocabulary/Chain'
-import Link, { ILinkKey, ILinkNode } from '../../src/vocabulary/Link'
+import Link, { ILinkKey } from '../../src/vocabulary/Link'
 import chai from 'chai'
-import { stringify } from "querystring";
 
 const expect = chai.expect
 
@@ -26,7 +25,7 @@ describe("Chain", () => {
   })
 
   it("Initializes with no links", () => {
-    expect(chain.links.size).to.eql(0)
+    expect(chain.getChainSize()).to.eql(0)
   })
 
   describe("insertLink()", () => {
@@ -38,36 +37,38 @@ describe("Chain", () => {
 
       chain.insertLink(newLinkKey, "test3")
 
-      expect(chain.links.size).to.eql(1)
-      expect(chain.links.get(newLinkKey)).to.eql(expectedLink)
+      expect(chain.getChainSize()).to.eql(1)
+      expect(chain.getLink(newLinkKey)).to.eql(expectedLink)
     })
 
     describe("will update existing link if it already exists", () => {
+      let newLink : ILinkKey
+      let expectedLink : Link
+
+      beforeEach(() => {
+        newLink = {first: "test1", second: "test2"}
+        expectedLink = new Link(newLink)
+      })
+      
       it("with existing next", () => {
-        const newLink : ILinkKey = {first: "test1", second: "test2"}
-
-        const expectedLink : Link = new Link(newLink)
         expectedLink.insertNode("test3")
         expectedLink.insertNode("test3")
-
+  
         chain.insertLink(newLink, "test3")
         chain.insertLink(newLink, "test3")
 
-        expect(chain.links.size).to.eql(1)
-        expect(chain.links.get(newLink)).to.eql(expectedLink)
+        expect(chain.getChainSize()).to.eql(1)
+        expect(chain.getLink(newLink)).to.eql(expectedLink)
       })
       it("with new next", () => {
-        const newLink : ILinkKey = {first: "test1", second: "test2"}
-
-        const expectedLink : Link = new Link(newLink)
         expectedLink.insertNode("test3")
         expectedLink.insertNode("test4")
 
         chain.insertLink(newLink, "test3")
         chain.insertLink(newLink, "test4")
 
-        expect(chain.links.size).to.eql(1)
-        expect(chain.links.get(newLink)).to.eql(expectedLink)
+        expect(chain.getChainSize()).to.eql(1)
+        expect(chain.getLink(newLink)).to.eql(expectedLink)
       })
     })
   })
@@ -81,8 +82,25 @@ describe("Chain", () => {
 
       chain.updateProbabilities()
 
-      expect(chain.links.get(linkKey1).nodes.get("test3").probability).to.eql([0,1])
-      expect(chain.links.get(linkKey2).nodes.get("test2").probability).to.eql([0,1])
+      expect(chain.getLink(linkKey1).nodes.get("test3").probability).to.eql([0,1])
+      expect(chain.getLink(linkKey2).nodes.get("test2").probability).to.eql([0,1])
+    })
+  })
+
+  describe("parseSentence()", () => {
+    it("Will add an entire sentence into its chain", () => {
+      const sentenceToParse = "test1 test2 test3 test4."
+      const expectedKey1 : ILinkKey = {first: "test1", second: "test2"}
+      const expectedKey2 : ILinkKey = {first: "test2", second: "test3"}
+      const expectedKey3 : ILinkKey = {first: "test3", second: "test4"}
+      const expectedKey4 : ILinkKey = {first: "test4", second: "."}
+
+      chain.parseSentence(sentenceToParse)
+
+      expect(chain.getLink(expectedKey1).nodes.has("test3")).to.be.true
+      expect(chain.getLink(expectedKey2).nodes.has("test4")).to.be.true
+      expect(chain.getLink(expectedKey3).nodes.has(".")).to.be.true
+      expect(chain.getLink(expectedKey4).nodes.has("")).to.be.true
     })
   })
 })

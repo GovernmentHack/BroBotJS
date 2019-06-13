@@ -10,6 +10,10 @@ export interface ILinkNode {
   next: string
 }
 
+const linkKeyToString = (key: ILinkKey) : string => {
+  return `${key.first}:${key.second}`
+}
+
 class Link {
   key: ILinkKey
   nodes: Map<string, ILinkNode>
@@ -61,3 +65,4 @@ class Link {
 } 
 
 export default Link
+export {linkKeyToString}

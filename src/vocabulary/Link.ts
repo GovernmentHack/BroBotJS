@@ -1,30 +1,28 @@
 
-export interface linkKey {
+export interface ILinkKey {
   first: string
   second: string
 }
 
-export interface LinkNode {
+export interface ILinkNode {
   weight: number, 
   probability: [number, number]
   next: string
 }
 
 class Link {
-  key: linkKey
-  nodes: Map<string, LinkNode>
+  key: ILinkKey
+  nodes: Map<string, ILinkNode>
   weightTotal: number
-  dirty: boolean
 
-  constructor(key : linkKey) {
+  constructor(key : ILinkKey) {
     this.key = key
-    this.nodes = new Map<string, LinkNode>()
+    this.nodes = new Map<string, ILinkNode>()
     this.weightTotal = 0
-    this.dirty = false
   }
 
-  addNode(next: string) {
-    let newNode : LinkNode = {
+  insertNode(next: string) {
+    let newNode : ILinkNode = {
       weight: 1,
       probability: [0, 0],
       next
@@ -32,10 +30,9 @@ class Link {
     if(this.nodes.has(next)) {
       newNode = this.nodes.get(next)
       newNode.weight++
-      this.weightTotal++
     }
+    this.weightTotal++
     this.nodes.set(next, newNode)
-    this.dirty = true
   }
 
   updateNodeProbabilities() {
@@ -45,10 +42,9 @@ class Link {
       counter += (node.weight/this.weightTotal)
       node.probability[1] = counter
     })
-    this.dirty = false
   }
 
-  getNextLinkKey() : linkKey {
+  getNextLinkKey() : ILinkKey {
     const keyToReturn = {
       first: this.key.second,
       second: ""
@@ -62,7 +58,6 @@ class Link {
     }
     return keyToReturn
   }
-
 } 
 
 export default Link

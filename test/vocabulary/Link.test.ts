@@ -1,29 +1,14 @@
 import chai from 'chai'
-import { Collection, Message } from 'discord.js';
-import mockMessageGenerator from '../discordBot/mockMessageGenerator'
-
-import Link, { LinkNode } from '../../src/vocabulary/Link'
+import Link, { ILinkNode } from '../../src/vocabulary/Link'
 
 const expect = chai.expect
 
-describe("vocabulary", () => {
-  let messages = new Collection<string, Message>()
-  let messsageGenerator = new mockMessageGenerator()
+describe("Link", () => {
   let link : Link
-  let node1 : LinkNode
-  let node2 : LinkNode 
+  let node1 : ILinkNode
+  let node2 : ILinkNode 
 
   beforeEach(() => {
-    let message1 = messsageGenerator.getMessage({cleanContent: "I am a message from someone."})
-    let message2 = messsageGenerator.getMessage({cleanContent: "I am a message from someone else."})
-    let message3 = messsageGenerator.getMessage({cleanContent: "I got a message from someone."})
-    let message4 = messsageGenerator.getMessage({cleanContent: "I got a different message from someone else."})
-
-    messages.set("00000", message1)
-    messages.set("00001", message2)
-    messages.set("00002", message3)
-    messages.set("00003", message4)
-
     node1 = {
       weight: 1,
       probability: [0,0],
@@ -35,31 +20,37 @@ describe("vocabulary", () => {
       weight: 3,
       next: "test2"
     }
-    
+
     link = new Link({ first: "first", second: "second"})
 
     link.nodes.set("test", node1)
     link.nodes.set("test2", node2)
     link.weightTotal = 4
+  })
 
+  it("initializes empty", () => {
+    link = new Link({ first: "first", second: "second"})
+    expect(link.key).to.eql({first: "first", second: "second"})
+    expect(link.nodes.size).to.eql(0)
+    expect(link.weightTotal).to.eql(0)
   })
 
   describe("addNode()", () => {
     it("adds new node if next doesn't exist", () => {
       const expectedNode = node1
-      link.addNode("test")
+      link.insertNode("test")
   
       expect(link.nodes.get("test")).to.eql(expectedNode)
     })
 
     it("updates weight on node if next already exists", () => {
-      const expectedNode : LinkNode = {
+      const expectedNode : ILinkNode = {
         weight: 2,
         probability: [0,0],
         next: "test"
       }
       link.nodes.set("test", node1)
-      link.addNode("test")
+      link.insertNode("test")
   
       expect(link.nodes.get("test")).to.eql(expectedNode)
     })
@@ -67,11 +58,11 @@ describe("vocabulary", () => {
 
   describe("updateNodeProbabilities()", () => {
     it("correctly weights probabilities", () => {
-      const expectedNode1 : LinkNode = {
+      const expectedNode1 : ILinkNode = {
         ...node1,
         probability: [0, 0.25]
       }
-      const expectedNode2 : LinkNode= {
+      const expectedNode2 : ILinkNode = {
         ...node2,
         probability: [0.25, 1]
       }

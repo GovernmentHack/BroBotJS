@@ -85,12 +85,20 @@ describe("Chain", () => {
       expect(chain.getLink(linkKey1).nodes.get("test3").probability).to.eql([0,1])
       expect(chain.getLink(linkKey2).nodes.get("test2").probability).to.eql([0,1])
     })
+
+    it("updates the probabilities of all starting links and respective nodes", () => {
+      const linkKey1 : ILinkKey = {first: "test1", second: "test2"}
+      chain.insertStartingLink(linkKey1, "test3")
+
+      chain.updateProbabilities()
+
+      expect(chain.getStartingLink(linkKey1).nodes.get("test3").probability).to.eql([0,1])
+    })
   })
 
   describe("parseSentence()", () => {
     it("will add an entire sentence into its chain", () => {
       const sentenceToParse = "test1 test2 test3 test4."
-      const expectedKey1 : ILinkKey = {first: "test1", second: "test2"}
       const expectedKey2 : ILinkKey = {first: "test2", second: "test3"}
       const expectedKey3 : ILinkKey = {first: "test3", second: "test4"}
       const expectedKey4 : ILinkKey = {first: "test4", second: "."}
@@ -132,15 +140,26 @@ describe("Chain", () => {
     })
   })
 
-  // describe("getSentence()", () => {
-  //   it("will produce a random sentence from its chain", () => {
-  //     const sentenceToParse = "test1 test2 test3 test4."
-  //     chain.parseSentence(sentenceToParse)
-  //     chain.updateProbabilities()
+  it("getRandomStartingLink()", () => {
+    const sentenceToParse = "test1 test2 test3 test4."
+    const expectedKey1 : ILinkKey = {first: "test1", second: "test2"}
 
-  //     const actualSentence = chain.getSentence()
+    chain.parseSentence(sentenceToParse)
 
-  //     expect(actualSentence).to.eql(sentenceToParse)
-  //   })
-  // })
+    const actualLink = chain.getRandomStartingLink()
+
+    expect(actualLink.key).to.eql(expectedKey1)
+  })
+
+  describe("getSentence()", () => {
+    it("will produce a random sentence from its chain", () => {
+      const sentenceToParse = "test1 test2 test3 test4."
+      chain.parseSentence(sentenceToParse)
+      chain.updateProbabilities()
+
+      const actualSentence = chain.getSentence()
+
+      expect(actualSentence).to.eql(sentenceToParse)
+    })
+  })
 })

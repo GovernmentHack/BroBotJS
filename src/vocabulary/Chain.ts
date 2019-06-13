@@ -63,12 +63,21 @@ class Chain {
     return this.startingLinks.get(linkKeyToString(key))
   }
 
+  getRandomStartingLink() : Link {
+    const randomKeyIndex = Math.floor(Math.random() * Math.floor(this.startingLinks.size - 1))
+    const randomKey = [...this.startingLinks.keys()][randomKeyIndex]
+    return this.startingLinks.get(randomKey)
+  }
+
   getChainSize() : number {
     return this.links.size
   }
   
   updateProbabilities() {
     this.links.forEach((link) => {
+      link.updateNodeProbabilities()
+    })
+    this.startingLinks.forEach((link) => {
       link.updateNodeProbabilities()
     })
   }
@@ -85,9 +94,12 @@ class Chain {
     }
     else {
       this.insertStartingLink({first: tokens[0], second: tokens[1]}, tokens[2])
-      for (let index = 1; index < tokens.length - 1; index++) {
+      for (let index = 1; index < tokens.length; index++) {
         if(index + 2 === tokens.length) {
           this.insertLink({ first: tokens[index], second: tokens[index+1] }, "")
+        }
+        else if(index + 1 === tokens.length) {
+          this.insertLink({ first: tokens[index], second: "" }, "")
         }
         else {
           this.insertLink({ first: tokens[index], second: tokens[index+1] }, tokens[index+2])
@@ -96,11 +108,18 @@ class Chain {
     }
   }
 
-  // getSentence() : string {
-  //   let tempSentence : string = ""
+  getSentence() : string {
+    let currentLink : Link = this.getRandomStartingLink()
+    let tempSentence : string = currentLink.key.first
 
-
-  // }
+    while (!!currentLink.key.second) {
+      const isNotPunctuation = currentLink.key.second.search(END_PUNCTUATION_MATCHER) === -1
+      if (isNotPunctuation) tempSentence += " "
+      tempSentence += currentLink.key.second
+      currentLink = this.getLink(currentLink.getNextLinkKey())
+    }
+    return tempSentence
+  }
 }
 
 export default Chain

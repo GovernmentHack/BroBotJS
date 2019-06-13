@@ -4,7 +4,7 @@
   "description": "A chat bot and API interface",
   "main": "index.js",
   "scripts": {
-    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts --exit",
+    "test": "ts-mocha -p tsconfig.json test/**/*.test.ts -R progress --exit",
     "test:watch": "ts-mocha -p tsconfig.json test/**/*.test.ts --watch --watch-extensions ts",
     "start": "npm run build:live",
     "build": "tsc -p .",

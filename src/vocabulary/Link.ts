@@ -49,7 +49,7 @@ class Link {
   }
 
   getNextLinkKey() : ILinkKey {
-    const keyToReturn = {
+    const keyToReturn : ILinkKey = {
       first: this.key.second,
       second: ""
     }

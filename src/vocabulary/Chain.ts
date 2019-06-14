@@ -109,9 +109,14 @@ class Chain {
   }
 
   getSentence() : string {
-    let currentLink : Link = this.getRandomStartingLink()
-    let tempSentence : string = currentLink.key.first
+    let currentLink : Link
+    let tempSentence : string
 
+    if(this.getChainSize() === 0) return "Error: I don't know anything yet..."
+    
+    currentLink = this.getRandomStartingLink()
+    tempSentence = currentLink.key.first
+    
     while (!!currentLink.key.second) {
       const isNotPunctuation = currentLink.key.second.search(END_PUNCTUATION_MATCHER) === -1
       if (isNotPunctuation) tempSentence += " "

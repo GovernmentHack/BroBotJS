@@ -54,9 +54,11 @@ describe("onMessage", () => {
       msg = mockGenerator.getMessage({includeMentions: true, includeClientMention: true})
   
       sendSpy = sinon.spy(msg.channel, "send")
+      const getSentenceSpy = sinon.spy(bot.chain, "getSentence")
   
       onMessageHandler(bot, msg)
       expect(sendSpy.calledOnce).to.be.true
+      expect(getSentenceSpy.calledOnce).to.be.true
     })
   
     it("doesn't send any messages if the client is not mentioned", () => {

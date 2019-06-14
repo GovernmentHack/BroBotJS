@@ -161,5 +161,11 @@ describe("Chain", () => {
 
       expect(actualSentence).to.eql(sentenceToParse)
     })
+
+    it("will return an error message if no links in chain exist", () => {
+      const actualSentence = chain.getSentence()
+
+      expect(actualSentence).to.eql("Error: I don't know anything yet...")
+    })
   })
 })

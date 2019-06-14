@@ -19,7 +19,7 @@ const onMessageHandler = async (bot: DiscordBot, msg : Message) => {
   }
 
   if(clientWasMentioned) {
-    msg.channel.send('...You rang?')
+    msg.channel.send(bot.chain.getSentence())
   }
 }
 

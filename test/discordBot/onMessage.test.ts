@@ -11,40 +11,43 @@ let sendSpy : SinonSpy
 
 describe("onMessage", () => {
   let msg : Message
-  let messsageGenerator = new MockGenerator()
+  let mockGenerator = new MockGenerator()
   let bot : DiscordBot
 
   afterEach(() => {
     sendSpy.restore()
     bot = new DiscordBot()
-    messsageGenerator.resetMocks()
+    mockGenerator.resetMocks()
   })
 
-  it("replies to message if client is mentioned", () => {
-    
-    msg = messsageGenerator.getMessage({includeMentions: true, includeClientMention: true})
+  describe("!learn", () => {
+    it("will run ingestChannelMessages()", () => {
+      msg = mockGenerator.getMessage({cleanContent: "!learn"})
 
-    sendSpy = sinon.spy(msg.channel, "send")
+      const ingestChannelMessagesSpy = sinon.spy(bot, "ingestChannelMessages")
 
-    onMessageHandler(bot, msg)
-    expect(sendSpy.calledOnce).to.be.true
+      onMessageHandler(bot, msg)
+
+      expect(ingestChannelMessagesSpy.calledOnce).to.be.true
+    })
   })
-
-  it("doesn't send any messages if the client is not mentioned", () => {
-    msg = messsageGenerator.getMessage({includeMentions: true})
-
-    sendSpy = sinon.spy(msg.channel, "send")
-
-    onMessageHandler(bot, msg)
-    expect(sendSpy.notCalled).to.be.true
-  })
-
-  it("doesn't send any messages if there are no mentions", () => {
-    msg = messsageGenerator.getMessage()
-
-    sendSpy = sinon.spy(msg.channel, "send")
-
-    onMessageHandler(bot, msg)
-    expect(sendSpy.notCalled).to.be.true
+  describe("mentions", () => {
+    it("replies to message if client is mentioned", () => {
+      msg = mockGenerator.getMessage({includeMentions: true, includeClientMention: true})
+  
+      sendSpy = sinon.spy(msg.channel, "send")
+  
+      onMessageHandler(bot, msg)
+      expect(sendSpy.calledOnce).to.be.true
+    })
+  
+    it("doesn't send any messages if the client is not mentioned", () => {
+      msg = mockGenerator.getMessage({includeMentions: true})
+  
+      sendSpy = sinon.spy(msg.channel, "send")
+  
+      onMessageHandler(bot, msg)
+      expect(sendSpy.notCalled).to.be.true
+    })
   })
 })

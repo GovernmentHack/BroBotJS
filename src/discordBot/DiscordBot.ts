@@ -71,3 +71,4 @@ class DiscordBot {
 }
 
 export default DiscordBot
+export { IIngestChannelMessagesOutput }

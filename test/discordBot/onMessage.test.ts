@@ -4,31 +4,49 @@ import onMessageHandler from '../../src/discordBot/onMessageHandler'
 import { Message } from 'discord.js'
 import MockGenerator from './MockGenerator'
 import DiscordBot from '../../src/discordBot/DiscordBot';
+import { doesNotReject } from 'assert';
 
 const expect = chai.expect
 
-let sendSpy : SinonSpy
 
 describe("onMessage", () => {
+  let sendSpy : SinonSpy
   let msg : Message
   let mockGenerator = new MockGenerator()
   let bot : DiscordBot
 
-  afterEach(() => {
-    sendSpy.restore()
+  beforeEach(() => {
     bot = new DiscordBot()
+  })
+
+  afterEach(() => {
     mockGenerator.resetMocks()
   })
 
   describe("!learn", () => {
+
     it("will run ingestChannelMessages()", () => {
       msg = mockGenerator.getMessage({cleanContent: "!learn"})
 
       const ingestChannelMessagesSpy = sinon.spy(bot, "ingestChannelMessages")
 
-      onMessageHandler(bot, msg)
-
-      expect(ingestChannelMessagesSpy.calledOnce).to.be.true
+      return onMessageHandler(bot, msg).then(() => {
+        expect(ingestChannelMessagesSpy.calledOnce).to.be.true
+      }).catch((error) => {
+        throw error
+      })
+    })
+    
+    it("will return a response", () => {
+      msg = mockGenerator.getMessage({cleanContent: "!learn"})
+      sendSpy = sinon.spy(msg.channel, "send")
+      
+      return onMessageHandler(bot, msg).then(() => {
+        expect(sendSpy.getCall(0).args[0]).to.include("I could not ingest messages: ")
+        expect(sendSpy.getCall(1).args[0]).to.include("Ingested 0 messages.")
+      }).catch((error) => {
+        throw error
+      })
     })
   })
   describe("mentions", () => {

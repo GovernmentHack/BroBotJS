@@ -66,7 +66,12 @@ class Chain {
   getRandomStartingLink() : Link {
     const randomKeyIndex = Math.floor(Math.random() * Math.floor(this.startingLinks.size - 1))
     const randomKey = [...this.startingLinks.keys()][randomKeyIndex]
-    return this.startingLinks.get(randomKey)
+    let randomLink = this.startingLinks.get(randomKey)
+    if (!randomLink){
+      const firstKey = [...this.startingLinks.keys()][0]
+      randomLink = this.startingLinks.get(firstKey)
+    }
+    return randomLink
   }
 
   getChainSize() : number {
@@ -112,7 +117,7 @@ class Chain {
     let currentLink : Link
     let tempSentence : string
 
-    if(this.getChainSize() === 0) return "Error: I don't know anything yet..."
+    if(this.startingLinks.size === 0) return "Error: I don't know anything yet..."
     
     currentLink = this.getRandomStartingLink()
     tempSentence = currentLink.key.first

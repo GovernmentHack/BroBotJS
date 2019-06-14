@@ -12,6 +12,7 @@ const onMessageHandler = async (bot: DiscordBot, msg : Message) => {
 
   if (!!msg.cleanContent) commandCalled = Command[msg.cleanContent.slice(1).toUpperCase()]
   if(!!commandCalled) {
+    console.debug(`Recieved ${Command[commandCalled]} command`)
     await bot.ingestChannelMessages(msg.channel as TextChannel).then((output : IIngestChannelMessagesOutput) => {
       if(!!output.error) msg.channel.send(`I could not ingest messages: ${output.error}`)
       msg.channel.send(`Ingested ${output.messagesIngested} messages.`)

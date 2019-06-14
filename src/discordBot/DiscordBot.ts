@@ -4,14 +4,17 @@ import onMessageHandler from './onMessageHandler'
 import onReadyHandler from './onReadyHandler'
 import Chain from '../vocabulary/Chain'
 
-const fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>) => {
+const fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>, messageID?: string) => {
   return channel
-    .fetchMessages({limit: 100})
+    .fetchMessages({limit: 100, before: messageID})
     .then((messagesCollected) => {
-      if (!!messagesCollected && messagesCollected.size > 0){
-        messagesBucket = messagesBucket.concat(messagesCollected)
-        return fetchAllMessages(channel, messagesBucket)
+      console.debug("Fetching messages ...")
+      console.debug(`Fetched ${messagesCollected.size} messages in this batch ...`)
+      messagesBucket = messagesBucket.concat(messagesCollected)
+      if (!!messagesCollected && messagesCollected.size === 100){
+        return fetchAllMessages(channel, messagesBucket, messagesCollected.lastKey())
       }
+      console.debug("Fetched batch of messages.")
       return messagesBucket
     })
     .catch((error) => {
@@ -46,17 +49,21 @@ class DiscordBot {
   
   logout() {
     this.client.destroy()
-    console.log('Logged out!')
+    console.info('Logged out!')
   }
 
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {
     let messages : Collection<string, Message> = new Collection<string, Message>()
     return fetchAllMessages(channel, messages)
       .then((collectedMessages) => {
+        console.debug("Parsing Sentences...")
         collectedMessages.forEach((message: Message) => {
           this.chain.parseSentence(message.cleanContent)
         })
+        console.debug("Parsed Sentences")
+        console.debug("Updating Probabilities ...")
         this.chain.updateProbabilities()
+        console.debug("Updated Probabilities")
         return {
           messagesIngested: collectedMessages.size
         }

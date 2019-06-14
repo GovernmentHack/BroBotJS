@@ -44,7 +44,7 @@ describe("DiscordBot", () => {
 
     it("can read in all messages from channel and parse them into its chain", () => {
       return bot.ingestChannelMessages(channel).then(() => {
-        expect(fetchMessagesStub.calledTwice).to.be.true
+        expect(fetchMessagesStub.calledOnce).to.be.true
         expect(bot.chain.getChainSize()).to.eql(7)
       }).catch((err) => {
         throw err
@@ -60,7 +60,7 @@ describe("DiscordBot", () => {
     })
 
     it("returns an error message if error occured", () => {
-      fetchMessagesStub.onSecondCall().rejects(new Error())
+      fetchMessagesStub.onFirstCall().rejects(new Error())
   
       return bot.ingestChannelMessages(channel).then((output) => {
         expect(!!output.error).to.be.true

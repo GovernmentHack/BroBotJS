@@ -70,7 +70,7 @@ class Chain {
   }
 
   getChainSize() : number {
-    return this.links.size
+    return this.links.size + this.startingLinks.size
   }
   
   updateProbabilities() {

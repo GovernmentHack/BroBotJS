@@ -1,4 +1,3 @@
-
 export interface ILinkKey {
   first: string
   second: string

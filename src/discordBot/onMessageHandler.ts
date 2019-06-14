@@ -1,6 +1,7 @@
 import { Message } from "discord.js";
+import DiscordBot from "./discordBot";
 
-const onMessageHandler = (msg : Message) => {
+const onMessageHandler = (bot: DiscordBot, msg : Message) => {
   let clientWasMentioned : boolean = msg.isMemberMentioned(msg.client.user)
 
   if(clientWasMentioned) {

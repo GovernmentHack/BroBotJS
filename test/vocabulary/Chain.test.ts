@@ -1,5 +1,5 @@
 import { Collection, Message } from "discord.js";
-import mockMessageGenerator from "../discordBot/mockMessageGenerator";
+import MockGenerator from "../discordBot/MockGenerator";
 import Chain from '../../src/vocabulary/Chain'
 import Link, { ILinkKey } from '../../src/vocabulary/Link'
 import chai from 'chai'
@@ -8,7 +8,7 @@ const expect = chai.expect
 
 describe("Chain", () => {
   let messages = new Collection<string, Message>()
-  let messsageGenerator = new mockMessageGenerator()
+  let messsageGenerator = new MockGenerator()
   let chain : Chain
   
   beforeEach(() => {

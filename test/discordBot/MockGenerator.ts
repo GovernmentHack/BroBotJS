@@ -1,6 +1,5 @@
 import { Message, ClientUser, Collection, GuildMember, MessageMentions, Client, TextChannel, User } from 'discord.js';
 import { mock, instance, when, reset } from 'ts-mockito'
-import { stringify } from 'querystring';
 
 const CLIENT_ID = "12345"
 const OTHER_ID = "00000"
@@ -11,7 +10,7 @@ interface IGetMessageOptions {
   cleanContent?: string,
 }
 
-class mockMessageGenerator {
+class MockGenerator {
   
   mockMsg : Message 
   mockTextChannel : TextChannel
@@ -32,10 +31,16 @@ class mockMessageGenerator {
     reset(this.mockClient)
     reset(this.mockClientUser)
   }
+
+  getChannel() : TextChannel {
+    this.mockTextChannel = mock(TextChannel)
+    let textChannel : TextChannel = instance(this.mockTextChannel)
+
+    return textChannel
+  }
   
   getMessage(options: IGetMessageOptions = {includeMentions: false, includeClientMention: false}) : Message {
     this.mockMsg = mock(Message)
-    this.mockTextChannel = mock(TextChannel)
     this.mockMentions = mock(MessageMentions)
     this.mockClientGuildMember = mock(GuildMember)
     this.mockGuildMember = mock(GuildMember)
@@ -77,13 +82,12 @@ class mockMessageGenerator {
       when(this.mockMsg.mentions).thenReturn(mentions)
     }
   
-    let textChannel : TextChannel = instance(this.mockTextChannel)
   
     if(!!options.cleanContent) {
       when(this.mockMsg.cleanContent).thenReturn(options.cleanContent)
     }
     when(this.mockMsg.client).thenReturn(client)
-    when(this.mockMsg.channel).thenReturn(textChannel)
+    when(this.mockMsg.channel).thenReturn(this.getChannel())
     if(options.includeClientMention){
       when(this.mockMsg.isMemberMentioned(client.user)).thenReturn(true)
     }
@@ -92,4 +96,4 @@ class mockMessageGenerator {
   }
 }
 
-export default mockMessageGenerator
+export default MockGenerator

@@ -6,8 +6,8 @@
   "mocha": {
     "requires": [
       "ts-node/register"
-     ],
-     "reporter" : "progress"
+    ],
+    "reporter": "progress"
   },
   "scripts": {
     "test": "ts-mocha -p tsconfig.json test/**/*.test.ts --exit",

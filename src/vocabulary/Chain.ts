@@ -122,7 +122,7 @@ class Chain {
     currentLink = this.getRandomStartingLink()
     tempSentence = currentLink.key.first
     
-    while (!!currentLink.key.second) {
+    while (!!currentLink && !!currentLink.key.second) {
       const isNotPunctuation = currentLink.key.second.search(END_PUNCTUATION_MATCHER) === -1
       if (isNotPunctuation) tempSentence += " "
       tempSentence += currentLink.key.second

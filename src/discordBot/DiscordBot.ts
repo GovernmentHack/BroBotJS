@@ -47,6 +47,7 @@ class DiscordBot {
   }
   
   login() {
+    this.setChainFromFile()
     this.client.login(secret.token)
   }
   
@@ -59,6 +60,20 @@ class DiscordBot {
     fs.writeFile(VOCABULARY_FILE, JSON.stringify(this.chain.toJSON()), (error) => {
       if (error) throw error
     })
+  }
+
+  setChainFromFile() {
+    console.debug("Importing vocabulary from file ...")
+    let tempChain : Chain
+    try {
+      const vocabularyRaw = fs.readFileSync(VOCABULARY_FILE, 'utf8')
+      const vocabulary = JSON.parse(vocabularyRaw)
+      tempChain = new Chain(vocabulary.links, vocabulary.startingLinks)
+    } catch(error) {
+      console.warn(`Import failed, chain not initialized: ${error}`)
+      throw error
+    }
+    this.chain = tempChain
   }
 
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {

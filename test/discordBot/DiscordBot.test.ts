@@ -1,4 +1,5 @@
 import chai from 'chai'
+import fs from 'fs'
 import DiscordBot from '../../src/discordBot/DiscordBot'
 import sinon, { SinonStub } from 'sinon'
 import { TextChannel, Collection, Message } from 'discord.js';
@@ -6,6 +7,7 @@ import MockGenerator from './mockGenerator';
 
 const expect = chai.expect
 const mockGenerator = new MockGenerator()
+const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 
 
 describe("DiscordBot", () => {
   let bot : DiscordBot
@@ -40,6 +42,21 @@ describe("DiscordBot", () => {
 
     afterEach(() => {
       fetchMessagesStub.reset()
+    })
+
+    it("login() will import Vocabulary file if it exists", () => {
+      const setChainFromFileSpy = sinon.spy(bot, "setChainFromFile")
+      const loginStub = sinon.stub(bot.client, "login")
+
+      const exampleVocabulary = require('./exampleVocabulary.json')
+      fs.writeFile(VOCABULARY_FILE, JSON.stringify(exampleVocabulary), (error) => {
+        if (error) throw error
+      })
+
+      bot.login()
+
+      expect(setChainFromFileSpy.callCount).to.eql(1)
+      expect(bot.chain.getStartingLink({first:"test1",second:"test2"}).nodes[0].next).to.eql(".")
     })
 
     it("can read in all messages from channel and parse them into its chain", () => {

@@ -1,4 +1,5 @@
 import Discord, { Client, TextChannel, Collection, Message, Channel } from 'discord.js'
+import fs from 'fs'
 import * as secret from '../../token.json'
 import onMessageHandler from './onMessageHandler'
 import onReadyHandler from './onReadyHandler'
@@ -52,6 +53,12 @@ class DiscordBot {
     console.info('Logged out!')
   }
 
+  writeChainToFile() {
+    fs.writeFile('./vocabulary.json', JSON.stringify(this.chain.toJSON()), (error) => {
+      if (error) throw error
+    })
+  }
+
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {
     let messages : Collection<string, Message> = new Collection<string, Message>()
     return fetchAllMessages(channel, messages)
@@ -61,9 +68,15 @@ class DiscordBot {
           this.chain.parseSentence(message.cleanContent)
         })
         console.debug("Parsed Sentences")
+
         console.debug("Updating Probabilities ...")
         this.chain.updateProbabilities()
         console.debug("Updated Probabilities")
+
+        console.debug("Saving Chain to file ...")
+        this.writeChainToFile()
+        console.debug("Chain saved.")
+
         return {
           messagesIngested: collectedMessages.size
         }

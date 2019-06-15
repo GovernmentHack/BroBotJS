@@ -68,5 +68,15 @@ describe("DiscordBot", () => {
         throw error
       })
     })
+
+    it("writes current chain contents to local json", () => {
+      const writeChainToFileSpy = sinon.spy(bot, "writeChainToFile")
+
+      return bot.ingestChannelMessages(channel).then((output) => {
+        expect(writeChainToFileSpy.callCount).to.eql(1)
+      }).catch((error) => {
+        throw error
+      })
+    })
   })
 })

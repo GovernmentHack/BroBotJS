@@ -25,7 +25,7 @@ describe("onMessage", () => {
 
   describe("!learn", () => {
     it("will run ingestChannelMessages()", () => {
-      msg = mockGenerator.getMessage({cleanContent: "!learn"})
+      msg = mockGenerator.getMessage({cleanContent: "!learn",author: mockGenerator.getUser()})
 
       const ingestChannelMessagesSpy = sinon.spy(bot, "ingestChannelMessages")
 
@@ -84,14 +84,32 @@ describe("onMessage", () => {
       expect(sendSpy.calledOnce).to.be.true
       expect(getSentenceSpy.calledOnce).to.be.true
     })
-  
-    it("doesn't send any messages if the client is not mentioned", () => {
-      msg = mockGenerator.getMessage({includeMentions: true})
+  })
+  describe("random replies", () => {
+    it("will not respond to messages from bots", () => {
+      msg = mockGenerator.getMessage({author: mockGenerator.getUser({bot: true}), includeClientMention: true})
   
       sendSpy = sinon.spy(msg.channel, "send")
+      const getSentenceSpy = sinon.spy(bot.chain, "getSentence")
   
       onMessageHandler(bot, msg)
-      expect(sendSpy.notCalled).to.be.true
+      expect(sendSpy.callCount).to.eql(0)
+      expect(getSentenceSpy.callCount).to.eql(0)
+    })
+
+    it("will respond to a random amount of messages based on bot's responseFrequency", () => {
+      msg = mockGenerator.getMessage()
+  
+      sendSpy = sinon.spy(msg.channel, "send")
+      const getSentenceSpy = sinon.spy(bot.chain, "getSentence")
+  
+      for(let i = 0; i < 1000; i++) onMessageHandler(bot, msg)
+      
+      const variation = Math.abs((getSentenceSpy.callCount/1000) - (bot.getResponseFrequency()/100))
+
+      expect(getSentenceSpy.callCount === sendSpy.callCount).to.be.true
+      expect(variation).to.be.lessThan(0.1)
+      
     })
   })
 })

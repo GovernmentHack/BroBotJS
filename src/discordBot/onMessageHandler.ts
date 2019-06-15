@@ -13,6 +13,7 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
   let commandOptions : string[]
 
   if (!message.cleanContent) return
+  if (message.author.bot) return
   
   commandCalled = Command[message.cleanContent.split(" ")[0].slice(1).toUpperCase()]
   if(!!commandCalled) {
@@ -30,12 +31,14 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
         break
       }
       case (Command.SETFREQ) : {
-        if(
-          !commandOptions ||
-          commandOptions.length !== 1 || 
-          parseInt(commandOptions[0]) < 0 ||
-          parseInt(commandOptions[0]) > 100 
-          ) {
+        const isValidCommand = (
+          !!commandOptions &&
+          commandOptions.length === 1 && 
+          parseInt(commandOptions[0]) >= 0 &&
+          parseInt(commandOptions[0]) <= 100 
+        )
+
+        if(!isValidCommand) {
           message.channel.send("!setFreq usage: `!setFreq [0-100]`")
           return
         }
@@ -50,6 +53,13 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
   if(clientWasMentioned && !commandCalled) {
     message.channel.send(bot.chain.getSentence())
   }
+
+  if(!(clientWasMentioned || commandCalled)) {
+    if(Math.random() <= (bot.getResponseFrequency()/100)) {
+      message.channel.send(bot.chain.getSentence())
+    }
+  }
+
 }
 
 export default onMessageHandler

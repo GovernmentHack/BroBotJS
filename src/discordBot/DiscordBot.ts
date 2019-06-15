@@ -5,6 +5,8 @@ import onMessageHandler from './onMessageHandler'
 import onReadyHandler from './onReadyHandler'
 import Chain from '../vocabulary/Chain'
 
+const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 
+
 const fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>, messageID?: string) => {
   return channel
     .fetchMessages({limit: 100, before: messageID})
@@ -54,7 +56,7 @@ class DiscordBot {
   }
 
   writeChainToFile() {
-    fs.writeFile('./vocabulary.json', JSON.stringify(this.chain.toJSON()), (error) => {
+    fs.writeFile(VOCABULARY_FILE, JSON.stringify(this.chain.toJSON()), (error) => {
       if (error) throw error
     })
   }

@@ -1,4 +1,5 @@
 import Link, { ILinkKey, linkKeyToString } from "./Link";
+import { timingSafeEqual } from "crypto";
 
 const END_PUNCTUATION_MATCHER = /[!?.,()]/g
 
@@ -28,9 +29,19 @@ class Chain {
   private links : Map<string, Link>
   private startingLinks : Map<string, Link>
   
-  constructor() {
+  constructor(links? : any[], startingLinks? : any[]) {
     this.links = new Map<string, Link>()
+    if(!!links) {
+      links.forEach((link) => {
+        this.links.set(linkKeyToString(link.key), new Link(link.key, link.nodes, link.weightTotal))
+      })
+    }
     this.startingLinks = new Map<string, Link>()
+    if(!!startingLinks) {
+      startingLinks.forEach((link) => {
+        this.startingLinks.set(linkKeyToString(link.key), new Link(link.key, link.nodes, link.weightTotal))
+      })
+    }
   }
   
   insertLink(newLinkKey: ILinkKey, next: string) {

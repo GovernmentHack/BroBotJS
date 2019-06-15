@@ -24,8 +24,20 @@ describe("Chain", () => {
     chain = new Chain()
   })
 
-  it("Initializes with no links", () => {
-    expect(chain.getChainSize()).to.eql(0)
+  describe("constructor()", () => {
+    it("Initializes with no links", () => {
+      expect(chain.getChainSize()).to.eql(0)
+    })
+
+    it("Can initialize with full chain from parameters", () => {
+      const exampleJSON = require("./exampleChain.json")
+
+      chain = new Chain(exampleJSON.links, exampleJSON.startingLinks)
+
+      expect(chain.getChainSize()).to.eql(5)
+      expect(chain.getStartingLink({first: "test1", second: "test2"}).toJSON()).to.eql(exampleJSON.startingLinks[0])
+      expect(chain.getLink({first: "test4", second: "."}).toJSON()).to.eql(exampleJSON.links[2])
+    })
   })
 
   describe("insertLink()", () => {

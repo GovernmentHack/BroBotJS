@@ -44,19 +44,17 @@ describe("DiscordBot", () => {
       fetchMessagesStub.reset()
     })
 
-    it("login() will import Vocabulary file if it exists", () => {
+    it.only("login() will import Vocabulary file if it exists", () => {
       const setChainFromFileSpy = sinon.spy(bot, "setChainFromFile")
       const loginStub = sinon.stub(bot.client, "login")
 
       const exampleVocabulary = require('./exampleVocabulary.json')
-      fs.writeFile(VOCABULARY_FILE, JSON.stringify(exampleVocabulary), (error) => {
-        if (error) throw error
-      })
+      fs.writeFileSync(VOCABULARY_FILE, JSON.stringify(exampleVocabulary))
 
       bot.login()
 
       expect(setChainFromFileSpy.callCount).to.eql(1)
-      expect(bot.chain.getStartingLink({first:"test1",second:"test2"}).nodes[0].next).to.eql(".")
+      expect(bot.chain.getStartingLink({first:"test1",second:"test2"}).nodes.has(".")).to.be.true
     })
 
     it("can read in all messages from channel and parse them into its chain", () => {

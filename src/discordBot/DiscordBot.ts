@@ -74,6 +74,7 @@ class DiscordBot {
       throw error
     }
     this.chain = tempChain
+    console.debug("Imported vocabulary")
   }
 
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {

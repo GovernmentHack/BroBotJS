@@ -96,4 +96,16 @@ describe("Link", () => {
 
     })
   })
+
+  describe("toJSON()", () => {
+    it("returns JSON object of itself", () => {
+      link.updateNodeProbabilities()
+
+      const expectedLink = require("./exampleLink.json")
+
+      const actualLink = link.toJSON()
+
+      expect(actualLink).to.eql(expectedLink)
+    })
+  })
 })

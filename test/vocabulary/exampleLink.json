@@ -1,0 +1,19 @@
+{
+  "key": {
+    "first": "first",
+    "second": "second"
+  },
+  "nodes": [
+    {
+      "weight": 1,
+      "probability": [0, 0.25],
+      "next": "test"
+    },
+    {
+      "weight": 3,
+      "probability": [0.25, 1],
+      "next": "test2"
+    }
+  ],
+  "weightTotal": 4
+}

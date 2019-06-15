@@ -67,10 +67,6 @@ class Chain {
     const randomKeyIndex = Math.floor(Math.random() * Math.floor(this.startingLinks.size - 1))
     const randomKey = [...this.startingLinks.keys()][randomKeyIndex]
     let randomLink = this.startingLinks.get(randomKey)
-    if (!randomLink){
-      const firstKey = [...this.startingLinks.keys()][0]
-      randomLink = this.startingLinks.get(firstKey)
-    }
     return randomLink
   }
 
@@ -129,6 +125,23 @@ class Chain {
       currentLink = this.getLink(currentLink.getNextLinkKey())
     }
     return tempSentence
+  }
+
+  toJSON() {
+    const links : any = []
+    const startingLinks : any = []
+
+    this.links.forEach((link) => {
+      links.push(link.toJSON())
+    })
+    this.startingLinks.forEach((startingLink) => {
+      startingLinks.push(startingLink.toJSON())
+    })
+
+    return {
+      links,
+      startingLinks
+    }
   }
 }
 

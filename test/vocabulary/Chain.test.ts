@@ -168,4 +168,18 @@ describe("Chain", () => {
       expect(actualSentence).to.eql("Error: I don't know anything yet...")
     })
   })
+
+  describe("toJSON()", () => {
+    it("returns the entire instance as a JSON", () => {
+      const sentenceToParse = "test1 test2 test3 test4."
+      chain.parseSentence(sentenceToParse)
+      chain.updateProbabilities()
+
+      const expectedJSON = require("./exampleChain.json")
+
+      const actualJSON = chain.toJSON()
+
+      expect(actualJSON).to.eql(expectedJSON)
+    })
+  })
 })

@@ -61,6 +61,20 @@ class Link {
     }
     return keyToReturn
   }
+
+  toJSON() {
+    const key = this.key
+    const nodes : ILinkNode[] = []
+    const weightTotal = this.weightTotal
+    this.nodes.forEach((node) => {
+      nodes.push(node)
+    })
+    return {
+      key,
+      nodes,
+      weightTotal
+    }
+  }
 } 
 
 export default Link

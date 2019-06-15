@@ -33,6 +33,7 @@ interface IIngestChannelMessagesOutput {
 class DiscordBot {
   client : Client
   chain : Chain
+  responseFrequency : number
   
   constructor() {
     this.client = new Discord.Client()
@@ -44,6 +45,18 @@ class DiscordBot {
     });
     
     this.chain = new Chain()
+
+    this.responseFrequency = 33
+  }
+
+  getResponseFrequency() : number {
+    return this.responseFrequency
+  }
+
+  setResponseFrequency(newFrequency : number) {
+    if(newFrequency >= 0 && newFrequency <= 100) {
+      this.responseFrequency = newFrequency
+    }
   }
   
   login() {

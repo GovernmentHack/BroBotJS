@@ -16,9 +16,23 @@ describe("DiscordBot", () => {
     bot = new DiscordBot()
   })
 
-  it("initilaizes its embers on creation", () => {
+  it("initilaizes its members on creation", () => {
     expect(!!bot.client).to.be.true
     expect(!!bot.chain).to.be.true
+    expect(bot.getResponseFrequency()).to.eql(33)
+  })
+
+  it("login() will import Vocabulary file if it exists", () => {
+    const setChainFromFileSpy = sinon.spy(bot, "setChainFromFile")
+    const loginStub = sinon.stub(bot.client, "login")
+
+    const exampleVocabulary = require('./exampleVocabulary.json')
+    fs.writeFileSync(VOCABULARY_FILE, JSON.stringify(exampleVocabulary))
+
+    bot.login()
+
+    expect(setChainFromFileSpy.callCount).to.eql(1)
+    expect(bot.chain.getStartingLink({first:"test1",second:"test2"}).nodes.has(".")).to.be.true
   })
 
   describe("ingestChannelMessages()", () => {
@@ -42,19 +56,6 @@ describe("DiscordBot", () => {
 
     afterEach(() => {
       fetchMessagesStub.reset()
-    })
-
-    it.only("login() will import Vocabulary file if it exists", () => {
-      const setChainFromFileSpy = sinon.spy(bot, "setChainFromFile")
-      const loginStub = sinon.stub(bot.client, "login")
-
-      const exampleVocabulary = require('./exampleVocabulary.json')
-      fs.writeFileSync(VOCABULARY_FILE, JSON.stringify(exampleVocabulary))
-
-      bot.login()
-
-      expect(setChainFromFileSpy.callCount).to.eql(1)
-      expect(bot.chain.getStartingLink({first:"test1",second:"test2"}).nodes.has(".")).to.be.true
     })
 
     it("can read in all messages from channel and parse them into its chain", () => {
@@ -92,6 +93,28 @@ describe("DiscordBot", () => {
       }).catch((error) => {
         throw error
       })
+    })
+  })
+
+  describe("setResponseFrequency()", () => {
+    it("will accept values between 0 and 100", () => {
+      bot.setResponseFrequency(0)
+
+      expect(bot.getResponseFrequency()).to.eql(0)
+
+      bot.setResponseFrequency(100)
+
+      expect(bot.getResponseFrequency()).to.eql(100)
+    })
+
+    it("wont set the frequency if the number is smaller or larger than 0 and 100", () => {
+      bot.setResponseFrequency(100.1)
+
+      expect(bot.getResponseFrequency()).to.eql(33)
+      
+      bot.setResponseFrequency(-1)
+
+      expect(bot.getResponseFrequency()).to.eql(33)
     })
   })
 })

@@ -82,9 +82,10 @@ class MockGenerator {
       when(this.mockMsg.mentions).thenReturn(mentions)
     }
   
-  
     if(!!options.cleanContent) {
       when(this.mockMsg.cleanContent).thenReturn(options.cleanContent)
+    } else {
+      when(this.mockMsg.cleanContent).thenReturn(" ")
     }
     when(this.mockMsg.client).thenReturn(client)
     when(this.mockMsg.channel).thenReturn(this.getChannel())

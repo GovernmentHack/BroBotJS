@@ -24,7 +24,6 @@ describe("onMessage", () => {
   })
 
   describe("!learn", () => {
-
     it("will run ingestChannelMessages()", () => {
       msg = mockGenerator.getMessage({cleanContent: "!learn"})
 
@@ -44,6 +43,31 @@ describe("onMessage", () => {
       return onMessageHandler(bot, msg).then(() => {
         expect(sendSpy.getCall(0).args[0]).to.include("I could not ingest messages: ")
         expect(sendSpy.getCall(1).args[0]).to.include("Ingested 0 messages.")
+      }).catch((error) => {
+        throw error
+      })
+    })
+  })
+  describe("!setFreq", () => {
+    it("requires a single number following the command", () => {
+      msg = mockGenerator.getMessage({cleanContent: "!setFreq"})
+      sendSpy = sinon.spy(msg.channel, "send")
+      
+      return onMessageHandler(bot, msg).then(() => {
+        expect(sendSpy.getCall(0).args[0]).to.include("!setFreq usage: `!setFreq [0-100]`")
+      }).catch((error) => {
+        throw error
+      })
+    })
+
+    it("will set the frequency of the bot", () => {
+      msg = mockGenerator.getMessage({cleanContent: "!setFreq 69"})
+      sendSpy = sinon.spy(msg.channel, "send")
+      const setResponseFrequencySpy = sinon.spy(bot, "setResponseFrequency")
+
+      return onMessageHandler(bot, msg).then(() => {
+        expect(sendSpy.getCall(0).args[0]).to.include("I will respond to 69% of messages now!")
+        expect(setResponseFrequencySpy.callCount).to.eql(1)
       }).catch((error) => {
         throw error
       })

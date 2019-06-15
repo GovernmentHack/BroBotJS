@@ -18,10 +18,15 @@ class Link {
   nodes: Map<string, ILinkNode>
   weightTotal: number
 
-  constructor(key : ILinkKey) {
+  constructor(key : ILinkKey, nodes?: ILinkNode[], weightTotal?: number) {
     this.key = key
     this.nodes = new Map<string, ILinkNode>()
-    this.weightTotal = 0
+    if(!!nodes) {
+      nodes.forEach((node) => {
+        this.nodes.set(node.next, node)
+      })
+    }
+    this.weightTotal = !!weightTotal ? weightTotal : 0
   }
 
   insertNode(next: string) {

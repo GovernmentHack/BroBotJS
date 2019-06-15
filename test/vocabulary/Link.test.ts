@@ -28,11 +28,21 @@ describe("Link", () => {
     link.weightTotal = 4
   })
 
-  it("initializes empty", () => {
-    link = new Link({ first: "first", second: "second"})
-    expect(link.key).to.eql({first: "first", second: "second"})
-    expect(link.nodes.size).to.eql(0)
-    expect(link.weightTotal).to.eql(0)
+  describe("constructor()", () => {
+    it("initializes empty", () => {
+      link = new Link({ first: "first", second: "second"})
+      expect(link.key).to.eql({first: "first", second: "second"})
+      expect(link.nodes.size).to.eql(0)
+      expect(link.weightTotal).to.eql(0)
+    })
+
+    it("can initialize with nodes if provided", () => {
+      const exampleLink = require("./exampleLink.json")
+      link = new Link(exampleLink.key, exampleLink.nodes, exampleLink.weightTotal)
+      expect(link.key).to.eql({first: "first", second: "second"})
+      expect(link.nodes.size).to.eql(2)
+      expect(link.weightTotal).to.eql(4)
+    })
   })
 
   describe("addNode()", () => {

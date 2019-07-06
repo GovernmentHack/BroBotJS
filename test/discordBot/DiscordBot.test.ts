@@ -49,6 +49,7 @@ describe("DiscordBot", () => {
       messages.set("00001", mockGenerator.getMessage({cleanContent: "test1 test2."}))
       messages.set("00002", mockGenerator.getMessage({cleanContent: "test2 test3.", author: botUser}))
       messages.set("00003", mockGenerator.getMessage({cleanContent: "test2 test3?"}))
+      messages.set("00004", mockGenerator.getMessage({cleanContent: "!testCommand"}))
       
       emptyMessages = new Collection<string, Message>()
 
@@ -60,7 +61,7 @@ describe("DiscordBot", () => {
       fetchMessagesStub.reset()
     })
 
-    it("can read in all user messages from channel and parse them into its chain", () => {
+    it("can read in all user messages from channel and parse them into its chain, ignoring Bot and command messages", () => {
       return bot.ingestChannelMessages(channel).then(() => {
         expect(fetchMessagesStub.calledOnce).to.be.true
         expect(bot.chain.getChainSize()).to.eql(6)

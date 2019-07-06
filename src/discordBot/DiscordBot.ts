@@ -97,7 +97,7 @@ class DiscordBot {
         let messagesIngested = 0
         console.debug("Parsing Sentences...")
         collectedMessages.forEach((message: Message) => {
-          if(!message.author.bot) {
+          if(!(message.author.bot || message.cleanContent[0] === "!")) {
             this.chain.parseSentence(message.cleanContent)
             messagesIngested ++
           }

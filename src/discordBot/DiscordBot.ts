@@ -7,24 +7,6 @@ import Chain from '../vocabulary/Chain'
 
 const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 
 
-const fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>, messageID?: string) => {
-  return channel
-    .fetchMessages({limit: 100, before: messageID})
-    .then((messagesCollected) => {
-      console.debug("Fetching messages ...")
-      console.debug(`Fetched ${messagesCollected.size} messages in this batch ...`)
-      messagesBucket = messagesBucket.concat(messagesCollected)
-      if (!!messagesCollected && messagesCollected.size === 100){
-        return fetchAllMessages(channel, messagesBucket, messagesCollected.lastKey())
-      }
-      console.debug("Fetched batch of messages.")
-      return messagesBucket
-    })
-    .catch((error) => {
-      throw error
-    })
-}
-
 interface IIngestChannelMessagesOutput {
   messagesIngested: number,
   error? : string
@@ -47,6 +29,24 @@ class DiscordBot {
     this.chain = new Chain()
 
     this.responseFrequency = 33
+  }
+
+  fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>, messageID?: string) => {
+    return channel
+      .fetchMessages({limit: 100, before: messageID})
+      .then((messagesCollected) => {
+        console.debug("Fetching messages ...")
+        console.debug(`Fetched ${messagesCollected.size} messages in this batch ...`)
+        messagesBucket = messagesBucket.concat(messagesCollected)
+        if (!!messagesCollected && messagesCollected.size === 100){
+          return this.fetchAllMessages(channel, messagesBucket, messagesCollected.lastKey())
+        }
+        console.debug("Fetched batch of messages.")
+        return messagesBucket
+      })
+      .catch((error) => {
+        throw error
+      })
   }
 
   getResponseFrequency() : number {
@@ -92,11 +92,15 @@ class DiscordBot {
 
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {
     let messages : Collection<string, Message> = new Collection<string, Message>()
-    return fetchAllMessages(channel, messages)
+    return this.fetchAllMessages(channel, messages)
       .then((collectedMessages) => {
+        let messagesIngested = 0
         console.debug("Parsing Sentences...")
         collectedMessages.forEach((message: Message) => {
-          this.chain.parseSentence(message.cleanContent)
+          if(!message.author.bot) {
+            this.chain.parseSentence(message.cleanContent)
+            messagesIngested ++
+          }
         })
         console.debug("Parsed Sentences")
 
@@ -109,7 +113,7 @@ class DiscordBot {
         console.debug("Chain saved.")
 
         return {
-          messagesIngested: collectedMessages.size
+          messagesIngested
         }
       })
       .catch((error) => {

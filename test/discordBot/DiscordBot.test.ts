@@ -2,7 +2,7 @@ import chai from 'chai'
 import fs from 'fs'
 import DiscordBot from '../../src/discordBot/DiscordBot'
 import sinon, { SinonStub } from 'sinon'
-import { TextChannel, Collection, Message } from 'discord.js';
+import { TextChannel, Collection, Message, User } from 'discord.js';
 import MockGenerator from './mockGenerator';
 
 const expect = chai.expect
@@ -37,15 +37,17 @@ describe("DiscordBot", () => {
 
   describe("ingestChannelMessages()", () => {
     let channel : TextChannel
+    let botUser : User
     let messages : Collection<string, Message>
     let emptyMessages : Collection<string, Message>
     let fetchMessagesStub : SinonStub
 
     beforeEach(() => {
       channel = mockGenerator.getChannel()
+      botUser = mockGenerator.getUser({bot: true})
       messages = new Collection<string, Message>()
       messages.set("00001", mockGenerator.getMessage({cleanContent: "test1 test2."}))
-      messages.set("00002", mockGenerator.getMessage({cleanContent: "test2 test3."}))
+      messages.set("00002", mockGenerator.getMessage({cleanContent: "test2 test3.", author: botUser}))
       messages.set("00003", mockGenerator.getMessage({cleanContent: "test2 test3?"}))
       
       emptyMessages = new Collection<string, Message>()
@@ -58,10 +60,10 @@ describe("DiscordBot", () => {
       fetchMessagesStub.reset()
     })
 
-    it("can read in all messages from channel and parse them into its chain", () => {
+    it("can read in all user messages from channel and parse them into its chain", () => {
       return bot.ingestChannelMessages(channel).then(() => {
         expect(fetchMessagesStub.calledOnce).to.be.true
-        expect(bot.chain.getChainSize()).to.eql(7)
+        expect(bot.chain.getChainSize()).to.eql(6)
       }).catch((err) => {
         throw err
       })
@@ -69,7 +71,7 @@ describe("DiscordBot", () => {
 
     it("returns statistics on read-in messages", () => {
       return bot.ingestChannelMessages(channel).then((output) => {
-        expect(output.messagesIngested).to.eql(3)
+        expect(output.messagesIngested).to.eql(2)
       }).catch((err) => {
         throw err
       })

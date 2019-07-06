@@ -82,11 +82,12 @@ class DiscordBot {
       const vocabularyRaw = fs.readFileSync(VOCABULARY_FILE, 'utf8')
       const vocabulary = JSON.parse(vocabularyRaw)
       tempChain = new Chain(vocabulary.links, vocabulary.startingLinks)
+      this.chain = tempChain
+      console.debug("Imported vocabulary")
     } catch(error) {
       console.warn(`Import failed, chain not initialized: ${error}`)
+      tempChain = new Chain()
     }
-    this.chain = tempChain
-    console.debug("Imported vocabulary")
   }
 
   async ingestChannelMessages(channel: TextChannel) : Promise<IIngestChannelMessagesOutput> {

@@ -9,15 +9,15 @@ const getTokensFromString = (sentence: string) : string[] => {
   wordTokens.forEach((token) => {
     const punctuationIndex = token.search(END_PUNCTUATION_MATCHER)
     if(punctuationIndex !== -1){
-      const tokenSplitFirst = token.slice(0, punctuationIndex)
-      if(!!tokenSplitFirst) wordAndPunctuationTokens.push(tokenSplitFirst)
+      const firstTokenSplit = token.slice(0, punctuationIndex)
+      if(!!firstTokenSplit) wordAndPunctuationTokens.push(firstTokenSplit)
 
-      const tokenSplitSecond = token.slice(punctuationIndex, punctuationIndex + 1)
-      wordAndPunctuationTokens.push(tokenSplitSecond)
+      const secondTokenSplit = token.slice(punctuationIndex, punctuationIndex + 1)
+      wordAndPunctuationTokens.push(secondTokenSplit)
       
       if(punctuationIndex !== token.length-1) {
-        const tokenSplitThird = token.slice(punctuationIndex)
-        if(!!tokenSplitThird) wordAndPunctuationTokens.push(tokenSplitThird)
+        const thirdTokenSplit = token.slice(punctuationIndex+1)
+        if(!!thirdTokenSplit) wordAndPunctuationTokens.push(thirdTokenSplit)
       }
     }
     else wordAndPunctuationTokens.push(token)

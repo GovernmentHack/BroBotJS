@@ -150,6 +150,15 @@ describe("Chain", () => {
       
       expect(chain.getStartingLink(expectedKey1).nodes.has("")).to.be.true
     })
+
+    it("can handle sentences with punctuation between words", () => {
+      const sentenceToParse = "test1.test2"
+      const expectedKey1 : ILinkKey = {first: "test1", second: "."}
+
+      chain.parseSentence(sentenceToParse)
+
+      expect(chain.getStartingLink(expectedKey1).nodes.has("test2")).to.be.true
+    })
   })
 
   it("getRandomStartingLink()", () => {

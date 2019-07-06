@@ -84,7 +84,6 @@ class DiscordBot {
       tempChain = new Chain(vocabulary.links, vocabulary.startingLinks)
     } catch(error) {
       console.warn(`Import failed, chain not initialized: ${error}`)
-      throw error
     }
     this.chain = tempChain
     console.debug("Imported vocabulary")

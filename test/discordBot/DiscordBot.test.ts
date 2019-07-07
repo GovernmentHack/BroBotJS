@@ -19,6 +19,7 @@ describe("DiscordBot", () => {
   it("initilaizes its members on creation", () => {
     expect(!!bot.client).to.be.true
     expect(!!bot.chain).to.be.true
+    expect(!!bot.messageLog).to.be.true
     expect(bot.getResponseFrequency()).to.eql(33)
   })
 

@@ -4,6 +4,7 @@ import * as secret from '../../token.json'
 import onMessageHandler from './onMessageHandler'
 import onReadyHandler from './onReadyHandler'
 import Chain from '../vocabulary/Chain'
+import Link from '../vocabulary/Link';
 
 const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 
 
@@ -12,23 +13,30 @@ interface IIngestChannelMessagesOutput {
   error? : string
 }
 
+interface IMessageLogItem {
+  messageString: string,
+  messageLinks: Link[],
+  triggerMessage: Message,
+  timeStamp: Date
+}
+
 class DiscordBot {
   client : Client
   chain : Chain
+  messageLog : IMessageLogItem[]
   responseFrequency : number
   
   constructor() {
     this.client = new Discord.Client()
+    this.chain = new Chain()
+    this.messageLog = new Array<IMessageLogItem>()
+    this.responseFrequency = 33
     this.client.on('ready', () => {
       onReadyHandler(this)
     });
     this.client.on('message', (message) => {
       onMessageHandler(this, message)
     });
-    
-    this.chain = new Chain()
-
-    this.responseFrequency = 33
   }
 
   fetchAllMessages = async (channel: TextChannel, messagesBucket: Collection<string, Message>, messageID?: string) => {

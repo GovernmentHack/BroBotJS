@@ -64,12 +64,16 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
   }
 
   if(clientWasMentioned && !commandCalled) {
-    message.channel.send(bot.chain.getSentence())
+    const sentence = bot.chain.getSentence()
+    message.channel.send(sentence.sentence)
+    bot.addMessageLogEntry(sentence.sentence, sentence.links, message)
   }
 
   if(!(clientWasMentioned || commandCalled)) {
     if(Math.random() <= (bot.getResponseFrequency()/100)) {
-      message.channel.send(bot.chain.getSentence())
+      const sentence = bot.chain.getSentence()
+      message.channel.send(sentence.sentence)
+      bot.addMessageLogEntry(sentence.sentence, sentence.links, message)
     }
   }
 

@@ -78,10 +78,12 @@ describe("onMessage", () => {
   
       sendSpy = sinon.spy(message.channel, "send")
       const getSentenceSpy = sinon.spy(bot.chain, "getSentence")
+      const addMessageLogEntrySpy = sinon.spy(bot, "addMessageLogEntry")
   
       onMessageHandler(bot, message)
       expect(sendSpy.calledOnce).to.be.true
       expect(getSentenceSpy.calledOnce).to.be.true
+      expect(addMessageLogEntrySpy.calledOnce).to.be.true
     })
   })
   describe("random replies", () => {
@@ -101,12 +103,14 @@ describe("onMessage", () => {
   
       sendSpy = sinon.spy(message.channel, "send")
       const getSentenceSpy = sinon.spy(bot.chain, "getSentence")
+      const addMessageLogEntrySpy = sinon.spy(bot, "addMessageLogEntry")
   
       for(let i = 0; i < 1000; i++) onMessageHandler(bot, message)
       
       const variation = Math.abs((getSentenceSpy.callCount/1000) - (bot.getResponseFrequency()/100))
 
       expect(getSentenceSpy.callCount === sendSpy.callCount).to.be.true
+      expect(getSentenceSpy.callCount === addMessageLogEntrySpy.callCount).to.be.true
       expect(variation).to.be.lessThan(0.1)
       
     })

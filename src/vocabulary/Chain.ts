@@ -1,5 +1,4 @@
 import Link, { ILinkKey, linkKeyToString } from "./Link";
-import { timingSafeEqual } from "crypto";
 
 const END_PUNCTUATION_MATCHER = /[!?.,()]/g
 
@@ -120,22 +119,31 @@ class Chain {
     }
   }
 
-  getSentence() : string {
+  getSentence() : {sentence: string, links: Link[]} {
     let currentLink : Link
-    let tempSentence : string
+    let sentence : string
+    let links : Link[] = []
 
-    if(this.startingLinks.size === 0) return "Error: I don't know anything yet..."
-    
+    if(this.startingLinks.size === 0) {
+      return {
+        sentence: "Error: I don't know anything yet...",
+        links: []
+      }
+    }
     currentLink = this.getRandomStartingLink()
-    tempSentence = currentLink.key.first
+    sentence = currentLink.key.first
     
     while (!!currentLink && !!currentLink.key.second) {
+      links.push(currentLink)
       const isNotPunctuation = currentLink.key.second.search(END_PUNCTUATION_MATCHER) === -1
-      if (isNotPunctuation) tempSentence += " "
-      tempSentence += currentLink.key.second
+      if (isNotPunctuation) sentence += " "
+      sentence += currentLink.key.second
       currentLink = this.getLink(currentLink.getNextLinkKey())
     }
-    return tempSentence
+    return {
+      sentence,
+      links
+    }
   }
 
   toJSON() {

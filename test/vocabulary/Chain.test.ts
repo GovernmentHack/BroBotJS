@@ -175,18 +175,25 @@ describe("Chain", () => {
   describe("getSentence()", () => {
     it("will produce a random sentence from its chain", () => {
       const sentenceToParse = "test1 test2 test3 test4."
+      const expectedLinks = []
       chain.parseSentence(sentenceToParse)
       chain.updateProbabilities()
+      expectedLinks.push(chain.getRandomStartingLink())
+      expectedLinks.push(chain.getLink({first: "test2", second: "test3"}))
+      expectedLinks.push(chain.getLink({first: "test3", second: "test4"}))
+      expectedLinks.push(chain.getLink({first: "test4", second: "."}))
 
       const actualSentence = chain.getSentence()
 
-      expect(actualSentence).to.eql(sentenceToParse)
+      expect(actualSentence.sentence).to.eql(sentenceToParse)
+      expect(actualSentence.links).to.eql(expectedLinks)
     })
 
     it("will return an error message if no links in chain exist", () => {
       const actualSentence = chain.getSentence()
 
-      expect(actualSentence).to.eql("Error: I don't know anything yet...")
+      expect(actualSentence.sentence).to.eql("Error: I don't know anything yet...")
+      expect(actualSentence.links).to.eql([])
     })
   })
 

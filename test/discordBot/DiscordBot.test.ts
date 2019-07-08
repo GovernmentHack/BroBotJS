@@ -1,9 +1,10 @@
 import chai from 'chai'
 import fs from 'fs'
 import DiscordBot from '../../src/discordBot/DiscordBot'
-import sinon, { SinonStub } from 'sinon'
+import sinon, { SinonStub, SinonSandbox, SinonFakeTimers } from 'sinon'
 import { TextChannel, Collection, Message, User } from 'discord.js';
 import MockGenerator from './mockGenerator';
+import Link from '../../src/vocabulary/Link';
 
 const expect = chai.expect
 const mockGenerator = new MockGenerator()
@@ -11,15 +12,25 @@ const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE
 
 describe("DiscordBot", () => {
   let bot : DiscordBot
+  let sandbox : SinonSandbox
+  let clock : SinonFakeTimers
+  const now = new Date()
 
   beforeEach(() => {
     bot = new DiscordBot()
+    sandbox = sinon.createSandbox();
+    clock = sinon.useFakeTimers(now.getTime());
   })
+
+  afterEach(() => {
+    sandbox.restore();
+    clock.restore();
+  });
 
   it("initilaizes its members on creation", () => {
     expect(!!bot.client).to.be.true
     expect(!!bot.chain).to.be.true
-    expect(!!bot.messageLog).to.be.true
+    expect(bot.getMessageLog()).to.eql([])
     expect(bot.getResponseFrequency()).to.eql(33)
   })
 
@@ -119,6 +130,31 @@ describe("DiscordBot", () => {
       bot.setResponseFrequency(-1)
 
       expect(bot.getResponseFrequency()).to.eql(33)
+    })
+  })
+
+  describe("addMEssageLogEntry()", () => {
+    let dummyLink : Link
+    let dummyMessage : Message
+    
+    beforeEach(() => {
+      dummyLink = new Link({first:"a", second:"string"})
+      dummyMessage =  mockGenerator.getMessage()
+      bot.addMessageLogEntry("a string", [dummyLink], dummyMessage)
+    })
+    
+    it("adds new log entry to end of message list", () => {
+      const expectedLogEntry = {
+        messageString: "a string",
+        messageLinks: [dummyLink],
+        triggerMessage: dummyMessage,
+        timeStamp: new Date()
+      }
+      expect(bot.getMessageLog()).to.eql([expectedLogEntry])
+    })
+
+    it("returns new length of log", () => {
+      expect(bot.addMessageLogEntry("a string", [dummyLink], dummyMessage)).to.eq(2)
     })
   })
 })

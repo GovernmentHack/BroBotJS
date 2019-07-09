@@ -147,7 +147,7 @@ describe("DiscordBot", () => {
       const expectedLogEntry = {
         messageString: "a string",
         messageLinks: [dummyLink],
-        triggerMessage: dummyMessage,
+        triggerMessage: dummyMessage.cleanContent,
         timeStamp: new Date()
       }
       expect(bot.getMessageLog()).to.eql([expectedLogEntry])

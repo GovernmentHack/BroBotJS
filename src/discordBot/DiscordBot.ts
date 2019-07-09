@@ -16,7 +16,7 @@ interface IIngestChannelMessagesOutput {
 interface IMessageLogEntry {
   messageString: string,
   messageLinks: Link[],
-  triggerMessage: Message,
+  triggerMessage: String,
   timeStamp: Date
 }
 
@@ -79,7 +79,7 @@ class DiscordBot {
       const newMessageLogEntry : IMessageLogEntry = {
         messageString,
         messageLinks,
-        triggerMessage,
+        triggerMessage: triggerMessage.cleanContent,
         timeStamp: new Date()
       }
 

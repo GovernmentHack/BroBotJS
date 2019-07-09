@@ -9,8 +9,13 @@ enum Command {
 
 const handleLearnCommand = async (bot : DiscordBot, message : Message) => {
   bot.ingestChannelMessages(message.channel as TextChannel).then((output : IIngestChannelMessagesOutput) => {
-    if(!!output.error) message.channel.send(`I could not ingest messages: ${output.error}`)
+    if(!!output.error) {
+      console.debug("Error: ", output.error)
+      message.channel.send(`I could not ingest messages: ${output.error}`)
+      bot.addMessageLogEntry(`I could not ingest messages: ${output.error}`, [], message)
+    }
     message.channel.send(`Ingested ${output.messagesIngested} messages.`)
+    bot.addMessageLogEntry(`Ingested ${output.messagesIngested} messages.`, [], message)
   })
 }
 
@@ -24,18 +29,20 @@ const handleSetFreqCommand = (bot: DiscordBot, message : Message, options : stri
 
   if(!isValidCommand) {
     message.channel.send("!setFreq usage: `!setFreq [0-100]`")
+    bot.addMessageLogEntry("!setFreq usage: `!setFreq [0-100]`", [], message)
     return
   }
 
   bot.setResponseFrequency(parseInt(options[0]))
   message.channel.send(`I will respond to ${options[0]}% of messages now!`)
+  bot.addMessageLogEntry(`I will respond to ${options[0]}% of messages now!`, [], message)
 }
 
 const handleCommands = async (command : Command, options : string[], bot: DiscordBot, message: Message) => {
-  console.info(`Recieved ${Command[command]} command`)
+  console.debug(`Recieved ${Command[command]} command`)
 
   options = message.cleanContent.split(" ").slice(1)
-  console.info(`Command Options: ${options}`)
+  console.debug(`Command Options: ${options}`)
 
   switch(command) {
     case (Command.LEARN) : {
@@ -76,7 +83,6 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
       bot.addMessageLogEntry(sentence.sentence, sentence.links, message)
     }
   }
-
 }
 
 export default onMessageHandler

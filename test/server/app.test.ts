@@ -18,3 +18,17 @@ describe("index", () => {
         })
     })
 })
+
+describe("api", () => {
+    describe("/messageLog", () => {
+        it("GET", (done) => {
+            chai.request(app)
+                .get("/api/messageLog")
+                .end((err, res) => {
+                    expect(res).to.have.status(200)
+                    expect(res.body).to.eql([])
+                    done()
+                })
+        })
+    })
+})

@@ -133,28 +133,26 @@ describe("DiscordBot", () => {
     })
   })
 
-  describe("addMEssageLogEntry()", () => {
+  describe("addMessageLogEntry()", () => {
     let dummyLink : Link
-    let dummyMessage : Message
     
     beforeEach(() => {
       dummyLink = new Link({first:"a", second:"string"})
-      dummyMessage =  mockGenerator.getMessage()
-      bot.addMessageLogEntry("a string", [dummyLink], dummyMessage)
+      bot.addMessageLogEntry("a string", [dummyLink], "test")
     })
     
     it("adds new log entry to end of message list", () => {
       const expectedLogEntry = {
         messageString: "a string",
         messageLinks: [dummyLink],
-        triggerMessage: dummyMessage.cleanContent,
+        triggerMessage: "test",
         timeStamp: new Date()
       }
       expect(bot.getMessageLog()).to.eql([expectedLogEntry])
     })
 
     it("returns new length of log", () => {
-      expect(bot.addMessageLogEntry("a string", [dummyLink], dummyMessage)).to.eq(2)
+      expect(bot.addMessageLogEntry("a string", [dummyLink], "test")).to.eq(2)
     })
   })
 })

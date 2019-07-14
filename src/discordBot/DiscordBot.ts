@@ -13,7 +13,7 @@ interface IIngestChannelMessagesOutput {
   error? : string
 }
 
-interface IMessageLogEntry {
+export interface IMessageLogEntry {
   messageString: string,
   messageLinks: Link[],
   triggerMessage: String,
@@ -74,12 +74,12 @@ class DiscordBot {
   addMessageLogEntry(
     messageString: string,
     messageLinks: Link[],
-    triggerMessage: Message,) : number {
+    triggerMessage: String,) : number {
 
       const newMessageLogEntry : IMessageLogEntry = {
         messageString,
         messageLinks,
-        triggerMessage: triggerMessage.cleanContent,
+        triggerMessage: triggerMessage,
         timeStamp: new Date()
       }
 

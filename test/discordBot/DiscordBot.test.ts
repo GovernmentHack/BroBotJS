@@ -4,7 +4,6 @@ import DiscordBot from '../../src/discordBot/DiscordBot'
 import sinon, { SinonStub, SinonSandbox, SinonFakeTimers } from 'sinon'
 import { TextChannel, Collection, Message, User } from 'discord.js';
 import MockGenerator from './mockGenerator';
-import Link from '../../src/vocabulary/Link';
 
 const expect = chai.expect
 const mockGenerator = new MockGenerator()
@@ -18,8 +17,8 @@ describe("DiscordBot", () => {
 
   beforeEach(() => {
     bot = new DiscordBot()
-    sandbox = sinon.createSandbox();
-    clock = sinon.useFakeTimers(now.getTime());
+    sandbox = sinon.createSandbox()
+    clock = sinon.useFakeTimers(now.getTime())
   })
 
   afterEach(() => {
@@ -30,7 +29,6 @@ describe("DiscordBot", () => {
   it("initilaizes its members on creation", () => {
     expect(!!bot.client).to.be.true
     expect(!!bot.chain).to.be.true
-    expect(bot.getMessageLog()).to.eql([])
     expect(bot.getResponseFrequency()).to.eql(33)
   })
 
@@ -130,29 +128,6 @@ describe("DiscordBot", () => {
       bot.setResponseFrequency(-1)
 
       expect(bot.getResponseFrequency()).to.eql(33)
-    })
-  })
-
-  describe("addMessageLogEntry()", () => {
-    let dummyLink : Link
-    
-    beforeEach(() => {
-      dummyLink = new Link({first:"a", second:"string"})
-      bot.addMessageLogEntry("a string", [dummyLink], "test")
-    })
-    
-    it("adds new log entry to end of message list", () => {
-      const expectedLogEntry = {
-        messageString: "a string",
-        messageLinks: [dummyLink],
-        triggerMessage: "test",
-        timeStamp: new Date()
-      }
-      expect(bot.getMessageLog()).to.eql([expectedLogEntry])
-    })
-
-    it("returns new length of log", () => {
-      expect(bot.addMessageLogEntry("a string", [dummyLink], "test")).to.eq(2)
     })
   })
 })

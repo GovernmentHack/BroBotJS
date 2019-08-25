@@ -1,5 +1,7 @@
 import { Message, TextChannel } from "discord.js";
 import DiscordBot, { IIngestChannelMessagesOutput } from "./discordBot";
+import { getRepository } from "typeorm";
+import { MessageLogEntry } from "../entity/MessageLogEntry";
 
 enum Command {
   INVALID,
@@ -9,17 +11,27 @@ enum Command {
 
 const handleLearnCommand = async (bot : DiscordBot, message : Message) => {
   bot.ingestChannelMessages(message.channel as TextChannel).then((output : IIngestChannelMessagesOutput) => {
+    const messageLogRepo = getRepository(MessageLogEntry)
     if(!!output.error) {
       console.debug("Error: ", output.error)
       message.channel.send(`I could not ingest messages: ${output.error}`)
-      bot.addMessageLogEntry(`I could not ingest messages: ${output.error}`, [], message)
+      messageLogRepo.insert({
+        messageString: `I could not ingest messages: ${output.error}`,
+        messageLinks: [],
+        triggerMessage: message.cleanContent
+      })
     }
     message.channel.send(`Ingested ${output.messagesIngested} messages.`)
-    bot.addMessageLogEntry(`Ingested ${output.messagesIngested} messages.`, [], message)
+    messageLogRepo.insert({
+      messageString: `Ingested ${output.messagesIngested} messages.`,
+      messageLinks: [],
+      triggerMessage: message.cleanContent
+    })
   })
 }
 
 const handleSetFreqCommand = (bot: DiscordBot, message : Message, options : string[]) => {
+  const messageLogRepo = getRepository(MessageLogEntry)
   const isValidCommand = (
     !!options &&
     options.length === 1 && 
@@ -29,13 +41,21 @@ const handleSetFreqCommand = (bot: DiscordBot, message : Message, options : stri
 
   if(!isValidCommand) {
     message.channel.send("!setFreq usage: `!setFreq [0-100]`")
-    bot.addMessageLogEntry("!setFreq usage: `!setFreq [0-100]`", [], message)
+    messageLogRepo.insert({
+      messageString: "!setFreq usage: `!setFreq [0-100]`",
+      messageLinks: [],
+      triggerMessage: message.cleanContent
+    })
     return
   }
 
   bot.setResponseFrequency(parseInt(options[0]))
   message.channel.send(`I will respond to ${options[0]}% of messages now!`)
-  bot.addMessageLogEntry(`I will respond to ${options[0]}% of messages now!`, [], message)
+  messageLogRepo.insert({
+    messageString: `I will respond to ${options[0]}% of messages now!`,
+    messageLinks: [],
+    triggerMessage: message.cleanContent
+  })
 }
 
 const handleCommands = async (command : Command, options : string[], bot: DiscordBot, message: Message) => {
@@ -60,6 +80,7 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
   let clientWasMentioned : boolean = message.isMemberMentioned(message.client.user) 
   let commandCalled : Command
   let commandOptions : string[]
+  const messageLogRepo = getRepository(MessageLogEntry)
 
   if (!message.cleanContent) return
   if (message.author.bot) return
@@ -73,14 +94,22 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
   if(clientWasMentioned && !commandCalled) {
     const sentence = bot.chain.getSentence()
     message.channel.send(sentence.sentence)
-    bot.addMessageLogEntry(sentence.sentence, sentence.links, message)
+    messageLogRepo.insert({
+      messageString: sentence.sentence,
+      messageLinks: sentence.links,
+      triggerMessage: message.cleanContent
+    })
   }
 
   if(!(clientWasMentioned || commandCalled)) {
     if(Math.random() <= (bot.getResponseFrequency()/100)) {
       const sentence = bot.chain.getSentence()
       message.channel.send(sentence.sentence)
-      bot.addMessageLogEntry(sentence.sentence, sentence.links, message)
+      messageLogRepo.insert({
+        messageString: sentence.sentence,
+        messageLinks: sentence.links,
+        triggerMessage: message.cleanContent
+      })
     }
   }
 }

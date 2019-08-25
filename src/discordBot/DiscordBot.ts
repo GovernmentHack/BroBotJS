@@ -4,7 +4,6 @@ import * as secret from '../../token.json'
 import onMessageHandler from './onMessageHandler'
 import onReadyHandler from './onReadyHandler'
 import Chain from '../vocabulary/Chain'
-import Link from '../vocabulary/Link';
 
 const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 
 
@@ -13,23 +12,14 @@ interface IIngestChannelMessagesOutput {
   error? : string
 }
 
-export interface IMessageLogEntry {
-  messageString: string,
-  messageLinks: Link[],
-  triggerMessage: String,
-  timeStamp: Date
-}
-
 class DiscordBot {
   client : Client
   chain : Chain
-  private messageLog : IMessageLogEntry[]
   private responseFrequency : number
   
   constructor() {
     this.client = new Discord.Client()
     this.chain = new Chain()
-    this.messageLog = new Array<IMessageLogEntry>()
     this.responseFrequency = 33
     this.client.on('ready', () => {
       onReadyHandler(this)
@@ -65,26 +55,6 @@ class DiscordBot {
     if(newFrequency >= 0 && newFrequency <= 100) {
       this.responseFrequency = newFrequency
     }
-  }
-
-  getMessageLog() : IMessageLogEntry[] {
-    return this.messageLog
-  }
-
-  addMessageLogEntry(
-    messageString: string,
-    messageLinks: Link[],
-    triggerMessage: String,) : number {
-
-      const newMessageLogEntry : IMessageLogEntry = {
-        messageString,
-        messageLinks,
-        triggerMessage: triggerMessage,
-        timeStamp: new Date()
-      }
-
-      this.messageLog.push(newMessageLogEntry)
-      return this.messageLog.length
   }
   
   login() {

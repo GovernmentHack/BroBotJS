@@ -1,15 +1,18 @@
 {
   "compilerOptions": {
-    "target": "es5",                         
+    "target": "es6",                         
     "module": "commonjs",                    
     "lib": ["es6","dom"],                       
     "esModuleInterop": true,                  
     "resolveJsonModule": true,                
     "removeComments": true,
     "sourceMap": true,
-    "rootDir": "/",
+    "rootDir": "./",
     "noImplicitAny" : false,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "outDir": "./build",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
   },
   "include": [
     "src/**/*"

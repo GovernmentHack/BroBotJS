@@ -1,12 +1,15 @@
 
-if (!!process.env.VCAP_SERVICES) {
-   const vcap_services = JSON.parse(process.env.VCAP_SERVICES)
-   const creds = vcap_services.cleardb.credentials
+let config = {}
 
-   module.exports = {
-      "name": "default",
+if (!!process.env.VCAP_SERVICES) {
+   console.log("***************** using prod ORM config ***********************")
+
+   const vcap_services = JSON.parse(process.env.VCAP_SERVICES)
+   const creds = vcap_services.cleardb[0].credentials
+
+   config = {
       "type": "mysql",
-      "host": creds.host,
+      "host": creds.hostname,
       "port": creds.port,
       "username": creds.username,
       "password": creds.password,
@@ -14,14 +17,15 @@ if (!!process.env.VCAP_SERVICES) {
       "logging": false,
       "synchronize": false,
       "charset": "utf8mb4",
+      "insecureAuth": true,
       "entities": [
-         "build/src/entity/**/*{.js,.ts}"
+         "src/entity/**/*{.js,.ts}"
       ],
       "migrations": [
-         "build/src/migration/**/*{.js,.ts}"
+         "src/migration/**/*{.js,.ts}"
       ],
       "subscribers": [
-         "build/src/subscriber/**/*{.js,.ts}"
+         "src/subscriber/**/*{.js,.ts}"
       ],
       "cli": {
          "entitiesDir": "src/entity",
@@ -32,8 +36,9 @@ if (!!process.env.VCAP_SERVICES) {
 }
 
 else {
-   module.exports = {
-      "name": "default",
+   console.log("***************** using dev ORM config ***********************")
+
+   config = {
       "type": "mysql",
       "host": "localhost",
       "port": 3306,
@@ -43,6 +48,7 @@ else {
       "logging": false,
       "synchronize": false,
       "charset": "utf8mb4",
+      "insecureAuth": true,
       "entities": [
          "build/src/entity/**/*{.js,.ts}",
       ],
@@ -59,3 +65,5 @@ else {
       }
    }
 }
+
+module.exports = config

@@ -1,0 +1,10 @@
+---
+applications:
+- name: BroBot 
+  path: ./build
+  buildpack: https://github.com/cloudfoundry/nodejs-buildpack
+  command: node_modules/typeorm/cli.js migration:run && node src/server/index.js
+  services:
+    - brobot-db
+  env:
+    OPTIMIZE_MEMORY : true

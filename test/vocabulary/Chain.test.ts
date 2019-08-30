@@ -172,7 +172,7 @@ describe("Chain", () => {
     expect(actualLink.key).to.eql(expectedKey1)
   })
 
-  describe("getSentence()", () => {
+  describe.only("getSentence()", () => {
     it("will produce a random sentence from its chain", () => {
       const sentenceToParse = "test1 test2 test3 test4."
       const expectedLinks = []
@@ -182,6 +182,7 @@ describe("Chain", () => {
       expectedLinks.push(chain.getLink({first: "test2", second: "test3"}))
       expectedLinks.push(chain.getLink({first: "test3", second: "test4"}))
       expectedLinks.push(chain.getLink({first: "test4", second: "."}))
+      expectedLinks.push(chain.getLink({first: ".", second: ""}))
 
       const actualSentence = chain.getSentence()
 

@@ -131,14 +131,15 @@ class Chain {
       }
     }
     currentLink = this.getRandomStartingLink()
+    links.push(currentLink)
     sentence = currentLink.key.first
     
     while (!!currentLink && !!currentLink.key.second) {
-      links.push(currentLink)
       const isNotPunctuation = currentLink.key.second.search(END_PUNCTUATION_MATCHER) === -1
       if (isNotPunctuation) sentence += " "
       sentence += currentLink.key.second
       currentLink = this.getLink(currentLink.getNextLinkKey())
+      links.push(currentLink)
     }
     return {
       sentence,

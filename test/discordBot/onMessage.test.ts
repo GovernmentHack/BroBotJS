@@ -36,39 +36,73 @@ describe("onMessage", () => {
   })
 
   describe("!learn", () => {
-    it("will run ingestChannelMessages()", () => {
-      message = mockGenerator.getMessage({cleanContent: "!learn",author: mockGenerator.getUser()})
 
-      const ingestChannelMessagesSpy = sinon.spy(bot, "ingestChannelMessages")
-
-      return onMessageHandler(bot, message).then(() => {
-        expect(ingestChannelMessagesSpy.calledOnce).to.be.true
-        expect(insertSpy.called).to.be.true
-      }).catch((error) => {
-        throw error
-      })
-    })
-    it("will return a response", () => {
-      message = mockGenerator.getMessage({cleanContent: "!learn"})
+    beforeEach(() => {
+      message = mockGenerator.getMessage({cleanContent: "!learn", author: mockGenerator.getUser()})
       sendSpy = sinon.spy(message.channel, "send")
+    })
 
-      return onMessageHandler(bot, message).then(() => {
-        expect(sendSpy.getCall(0).args[0]).to.include("I could not ingest messages: ")
-        expect(sendSpy.getCall(1).args[0]).to.include("Ingested 0 messages.")
-        expect(insertSpy.calledTwice).to.be.true
-      }).catch((error) => {
-        throw error
+    afterEach(() => {
+      sendSpy.restore()
+    })
+
+    describe("will run ingestChannelMessages()", () => {
+      it("on a success", () => {
+        const ingestChannelMessagesSpy = sinon.stub(bot, "ingestChannelMessages").resolves({
+          messagesIngested: 1
+        })
+  
+        return onMessageHandler(bot, message).then(() => {
+          expect(ingestChannelMessagesSpy.calledOnce).to.be.true
+          expect(sendSpy.getCall(0).args[0]).to.include("Ingested 1 messages.")
+          expect(insertSpy.getCall(0).args[0]).to.eql({
+            messageString: `Ingested 1 messages.`,
+            messageLinks: [],
+            triggerMessage: message.cleanContent
+          })
+        }).catch((error) => {
+          throw error
+        })
+      })
+      it("on a failure", () => {
+        const ingestChannelMessagesSpy = sinon.stub(bot, "ingestChannelMessages").resolves({
+          messagesIngested: 0,
+          error: "Error"
+        })
+
+        return onMessageHandler(bot, message).then(() => {
+          expect(ingestChannelMessagesSpy.calledOnce).to.be.true
+          expect(sendSpy.getCall(0).args[0]).to.include("I could not ingest messages: Error")
+          expect(sendSpy.getCall(1).args[0]).to.include("Ingested 0 messages.")
+          expect(insertSpy.getCall(0).args[0]).to.eql({
+            messageString: `I could not ingest messages: Error`,
+            messageLinks: [],
+            triggerMessage: message.cleanContent
+          })
+          expect(insertSpy.getCall(1).args[0]).to.eql({
+            messageString: `Ingested 0 messages.`,
+            messageLinks: [],
+            triggerMessage: message.cleanContent
+          })
+        }).catch((error) => {
+          throw error
+        })
       })
     })
   })
-  describe("!setFreq", () => {
+
+  describe.only("!setFreq", () => {
     it("requires a single number following the command", () => {
       message = mockGenerator.getMessage({cleanContent: "!setFreq"})
       sendSpy = sinon.spy(message.channel, "send")
 
       return onMessageHandler(bot, message).then(() => {
         expect(sendSpy.getCall(0).args[0]).to.include("!setFreq usage: `!setFreq [0-100]`")
-        expect(insertSpy.called).to.be.true
+        expect(insertSpy.getCall(0).args[0]).to.eql({
+          messageString: "!setFreq usage: `!setFreq [0-100]`",
+          messageLinks: [],
+          triggerMessage: message.cleanContent
+        })
       }).catch((error) => {
         throw error
       })
@@ -82,7 +116,11 @@ describe("onMessage", () => {
       return onMessageHandler(bot, message).then(() => {
         expect(sendSpy.getCall(0).args[0]).to.include("I will respond to 69% of messages now!")
         expect(setResponseFrequencySpy.callCount).to.eql(1)
-        expect(insertSpy.called).to.be.true
+        expect(insertSpy.getCall(0).args[0]).to.eql({
+          messageString: "I will respond to 69% of messages now!",
+          messageLinks: [],
+          triggerMessage: message.cleanContent
+        })
       }).catch((error) => {
         throw error
       })

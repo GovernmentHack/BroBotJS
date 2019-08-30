@@ -1,5 +1,5 @@
-import { Collection, Message } from "discord.js";
-import MockGenerator from "../discordBot/MockGenerator";
+import { Collection, Message } from "discord.js"
+import MockGenerator from "../discordBot/MockGenerator"
 import Chain from '../../src/vocabulary/Chain'
 import Link, { ILinkKey } from '../../src/vocabulary/Link'
 import chai from 'chai'

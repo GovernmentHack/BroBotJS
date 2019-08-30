@@ -1,7 +1,6 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app, {discordBot} from '../../src/server/app'
-import Link from '../../src/vocabulary/Link'
+import app from '../../src/server/app'
 import sinon, { SinonSandbox, SinonFakeTimers, SinonSpy, SinonStub } from 'sinon'
 
 const typeorm = require("typeorm")
@@ -17,7 +16,19 @@ describe("app", () => {
   
   beforeEach(() => {
     insertSpy = sinon.spy()
-    createQueryBuilderStub = sinon.stub().returns({orderBy: () => {return {limit: () => {return []}}}})
+    createQueryBuilderStub = sinon.stub().returns({
+      orderBy: () => {
+        return {
+          limit: () => {
+            return {
+              getMany: () => {
+                return []
+              }
+            }
+          }
+        }
+      }
+    })
     findStub = sinon.stub().withArgs(0).returns({id: 0, messageLinks: [], triggerMessage: "", messageString: ""})
     getManagerStub = sinon.stub(typeorm, "getRepository").returns({
       insert: insertSpy,

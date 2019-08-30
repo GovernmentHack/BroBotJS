@@ -3,7 +3,7 @@ import chai from 'chai'
 import onMessageHandler from '../../src/discordBot/onMessageHandler'
 import { Message } from 'discord.js'
 import MockGenerator from './MockGenerator'
-import DiscordBot from '../../src/discordBot/DiscordBot';
+import DiscordBot from '../../src/discordBot/DiscordBot'
 
 const typeorm = require("typeorm")
 

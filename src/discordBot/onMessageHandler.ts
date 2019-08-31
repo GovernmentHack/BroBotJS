@@ -6,7 +6,8 @@ import { MessageLogEntry } from "../entity/MessageLogEntry";
 enum Command {
   INVALID,
   LEARN,
-  SETFREQ
+  SETFREQ,
+  MUTE
 }
 
 const handleLearnCommand = async (bot : DiscordBot, message : Message) => {
@@ -58,6 +59,18 @@ const handleSetFreqCommand = (bot: DiscordBot, message : Message, options : stri
   })
 }
 
+const handleMuteCommand = (bot: DiscordBot, message: Message) => {
+  const messageLogRepo = getRepository(MessageLogEntry)
+
+  bot.mutedChannels.add(message.channel.id)
+  message.channel.send("I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.")
+  messageLogRepo.insert({
+    messageString: "I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.",
+    messageLinks: [],
+    triggerMessage: message.cleanContent
+  })
+}
+
 const handleCommands = async (command : Command, options : string[], bot: DiscordBot, message: Message) => {
   console.debug(`Recieved ${Command[command]} command`)
 
@@ -71,6 +84,10 @@ const handleCommands = async (command : Command, options : string[], bot: Discor
     }
     case (Command.SETFREQ) : {
       handleSetFreqCommand(bot, message, options)
+      break
+    }
+    case (Command.MUTE) : {
+      handleMuteCommand(bot, message)
       break
     }
   }

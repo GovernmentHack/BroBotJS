@@ -3,12 +3,14 @@ import { mock, instance, when, reset } from 'ts-mockito'
 
 const CLIENT_ID = "12345"
 const OTHER_ID = "00000"
+const TEXT_CHANNEL_ID = "99999"
 
 interface IGetMessageOptions {
   includeMentions?: boolean,
   includeClientMention?: boolean,
   cleanContent?: string,
-  author?: User
+  author?: User,
+  channel?: TextChannel
 }
 
 interface IGetUserOptions {
@@ -38,8 +40,9 @@ class MockGenerator {
     reset(this.mockClientUser)
   }
 
-  getChannel() : TextChannel {
+  getChannel(id?: string) : TextChannel {
     this.mockTextChannel = mock(TextChannel)
+    when(this.mockTextChannel.id).thenReturn(!!id ? id : TEXT_CHANNEL_ID)
     let textChannel : TextChannel = instance(this.mockTextChannel)
 
     return textChannel
@@ -108,7 +111,12 @@ class MockGenerator {
     }
 
     when(this.mockMsg.client).thenReturn(client)
-    when(this.mockMsg.channel).thenReturn(this.getChannel())
+
+    if(!!options.channel) {
+      when(this.mockMsg.channel).thenReturn(options.channel)
+    } else {
+      when(this.mockMsg.channel).thenReturn(this.getChannel())
+    }
     if(options.includeClientMention){
       when(this.mockMsg.isMemberMentioned(client.user)).thenReturn(true)
     }

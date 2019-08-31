@@ -16,11 +16,13 @@ class DiscordBot {
   client : Client
   chain : Chain
   private responseFrequency : number
+  mutedChannels : Set<string>
   
   constructor() {
     this.client = new Discord.Client()
     this.chain = new Chain()
     this.responseFrequency = 33
+    this.mutedChannels = new Set<string>()
     this.client.on('ready', () => {
       onReadyHandler(this)
     });

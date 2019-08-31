@@ -10,7 +10,7 @@ const typeorm = require("typeorm")
 const expect = chai.expect
 
 
-describe("onMessage", () => {
+describe("onMessageHandler", () => {
   let sendSpy : SinonSpy
   let insertSpy : SinonSpy
   let getManagerStub : SinonStub
@@ -90,8 +90,7 @@ describe("onMessage", () => {
       })
     })
   })
-
-  describe.only("!setFreq", () => {
+  describe("!setFreq", () => {
     it("requires a single number following the command", () => {
       message = mockGenerator.getMessage({cleanContent: "!setFreq"})
       sendSpy = sinon.spy(message.channel, "send")
@@ -118,6 +117,24 @@ describe("onMessage", () => {
         expect(setResponseFrequencySpy.callCount).to.eql(1)
         expect(insertSpy.getCall(0).args[0]).to.eql({
           messageString: "I will respond to 69% of messages now!",
+          messageLinks: [],
+          triggerMessage: message.cleanContent
+        })
+      }).catch((error) => {
+        throw error
+      })
+    })
+  })
+  describe("!mute", () => {
+    it("adds the channel to its mute", () => {
+      message = mockGenerator.getMessage({cleanContent: "!mute", channel: mockGenerator.getChannel("12345")})
+      sendSpy = sinon.spy(message.channel, "send")
+
+      return onMessageHandler(bot, message).then(() => {
+        expect(bot.mutedChannels).to.include("12345")
+        expect(sendSpy.getCall(0).args[0]).to.include("I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.")
+        expect(insertSpy.getCall(0).args[0]).to.eql({
+          messageString: "I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.",
           messageLinks: [],
           triggerMessage: message.cleanContent
         })

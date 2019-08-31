@@ -173,11 +173,33 @@ describe("onMessageHandler", () => {
       expect(getSentenceSpy.calledOnce).to.be.true
       expect(insertSpy.calledOnce).to.be.true
     })
+
+    it("will not respond to messages from muted channels", () => {
+      message = mockGenerator.getMessage({author: mockGenerator.getUser(), includeClientMention: true, channel: mockGenerator.getChannel("11111")})
+      sendSpy = sinon.spy(message.channel, "send")
+      bot.mutedChannels.add("11111")
+
+      onMessageHandler(bot, message)
+      expect(sendSpy.callCount).to.eql(0)
+      expect(getSentenceSpy.callCount).to.eql(0)
+    })
+
   })
   describe("random replies", () => {
     it("will not respond to messages from bots", () => {
       message = mockGenerator.getMessage({author: mockGenerator.getUser({bot: true}), includeClientMention: true})
       sendSpy = sinon.spy(message.channel, "send")
+
+      onMessageHandler(bot, message)
+      expect(sendSpy.callCount).to.eql(0)
+      expect(getSentenceSpy.callCount).to.eql(0)
+    })
+
+    it("will not respond to messages from muted channels", () => {
+      message = mockGenerator.getMessage({author: mockGenerator.getUser(), channel: mockGenerator.getChannel("11111")})
+      sendSpy = sinon.spy(message.channel, "send")
+      bot.mutedChannels.add("11111")
+      bot.setResponseFrequency(100)
 
       onMessageHandler(bot, message)
       expect(sendSpy.callCount).to.eql(0)

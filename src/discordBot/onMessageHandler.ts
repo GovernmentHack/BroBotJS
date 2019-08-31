@@ -125,6 +125,8 @@ const onMessageHandler = async (bot: DiscordBot, message : Message) => {
     await handleCommands(commandCalled, commandOptions, bot, message)
   }
 
+  if (bot.mutedChannels.has(message.channel.id)) return
+  
   if(clientWasMentioned && !commandCalled) {
     const sentence = bot.chain.getSentence()
     message.channel.send(sentence.sentence)

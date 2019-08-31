@@ -126,7 +126,7 @@ describe("onMessageHandler", () => {
     })
   })
   describe("!mute", () => {
-    it("adds the channel to its mute", () => {
+    it("adds the channel to its mute set", () => {
       message = mockGenerator.getMessage({cleanContent: "!mute", channel: mockGenerator.getChannel("12345")})
       sendSpy = sinon.spy(message.channel, "send")
 
@@ -135,6 +135,26 @@ describe("onMessageHandler", () => {
         expect(sendSpy.getCall(0).args[0]).to.include("I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.")
         expect(insertSpy.getCall(0).args[0]).to.eql({
           messageString: "I am now muted on this channel. To unmute me, please use the `!unmute` command on this channel.",
+          messageLinks: [],
+          triggerMessage: message.cleanContent
+        })
+      }).catch((error) => {
+        throw error
+      })
+    })
+  })
+  describe("!unmute", () => {
+    it("removes the channel from its mute set", () => {
+      message = mockGenerator.getMessage({cleanContent: "!unmute", channel: mockGenerator.getChannel("12345")})
+      sendSpy = sinon.spy(message.channel, "send")
+
+      bot.mutedChannels.add("12345")
+
+      return onMessageHandler(bot, message).then(() => {
+        expect(bot.mutedChannels).to.not.include("12345")
+        expect(sendSpy.getCall(0).args[0]).to.include("I am now unmuted on this channel.")
+        expect(insertSpy.getCall(0).args[0]).to.eql({
+          messageString: "I am now unmuted on this channel.",
           messageLinks: [],
           triggerMessage: message.cleanContent
         })

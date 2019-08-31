@@ -7,7 +7,8 @@ enum Command {
   INVALID,
   LEARN,
   SETFREQ,
-  MUTE
+  MUTE,
+  UNMUTE
 }
 
 const handleLearnCommand = async (bot : DiscordBot, message : Message) => {
@@ -71,6 +72,18 @@ const handleMuteCommand = (bot: DiscordBot, message: Message) => {
   })
 }
 
+const handleUnmuteCommand = (bot: DiscordBot, message: Message) => {
+  const messageLogRepo = getRepository(MessageLogEntry)
+
+  bot.mutedChannels.delete(message.channel.id)
+  message.channel.send("I am now unmuted on this channel.")
+  messageLogRepo.insert({
+    messageString: "I am now unmuted on this channel.",
+    messageLinks: [],
+    triggerMessage: message.cleanContent
+  })
+}
+
 const handleCommands = async (command : Command, options : string[], bot: DiscordBot, message: Message) => {
   console.debug(`Recieved ${Command[command]} command`)
 
@@ -88,6 +101,10 @@ const handleCommands = async (command : Command, options : string[], bot: Discor
     }
     case (Command.MUTE) : {
       handleMuteCommand(bot, message)
+      break
+    }
+    case (Command.UNMUTE) : {
+      handleUnmuteCommand(bot, message)
       break
     }
   }

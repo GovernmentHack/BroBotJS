@@ -23,9 +23,10 @@
     "migration:generate": "ts-node ./node_modules/typeorm/cli.js migration:generate -n",
     "migration:run": "npm run build && ts-node ./node_modules/typeorm/cli.js migration:run",
     "start-frontend": "webpack-dev-server --mode development --open --hot",
-    "build-frontend:post": "cpx \"app/public/*.{ico,png,json}\" dist",
-    "build-frontend:pre": "rimraf src",
-    "build-frontend": "npm run build-frontend:post && webpack --mode production && npm run build-frontend:post"
+    "build-frontend:post": "cpx \"./app/public/*.{ico,png,json}\" ./build/dist",
+    "build-frontend:pre": "rimraf ./build/dist",
+    "build-frontend": "npm run build-frontend:pre && webpack --mode production && npm run build-frontend:post",
+    "build-all": "npm run build && npm run build-frontend"
   },
   "repository": {
     "type": "git",

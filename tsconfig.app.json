@@ -1,7 +1,6 @@
 {
-  "extends": "../tsconfig",
   "compilerOptions": {
-    "outDir": "../dist/",
+    "outDir": "build/dist/",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
@@ -10,6 +9,7 @@
     "esModuleInterop" : true
   },
   "include": [
-    "src/**/*.{ts,tsx}"
+    "app/src/**/*.tsx",
+    "app/src/**/*.ts"
   ]
 }

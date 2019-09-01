@@ -8,7 +8,7 @@ const expect = chai.expect
 
 chai.use(chaiHttp)
 
-describe("app", () => {
+describe.only("app", () => {
   let insertSpy : SinonSpy
   let getManagerStub : SinonStub
   let createQueryBuilderStub : SinonStub
@@ -48,7 +48,7 @@ describe("app", () => {
         chai.request(app)
           .get('/')
           .end((err, res) => {
-            expect(res).to.have.status(200)
+            expect(res).to.be.html
             done()
           })
       })

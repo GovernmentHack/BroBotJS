@@ -8,6 +8,17 @@ module.exports = {
   resolve: {
     extensions: [".ts", ".tsx"]
   },
+  devServer: {
+    contentBase: path.join(__dirname, "dist"),
+    compress: true,
+    port: 9000,
+    proxy: {
+        '/api': {
+            target: 'http://localhost:3000',
+            secure: false
+        }
+    }
+  }, 
   module: {
     rules: [
       {
@@ -44,6 +55,7 @@ module.exports = {
   },
   output: {
     path: path.join(__dirname, '/build/dist'),
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    publicPath: '/'
   }
 };

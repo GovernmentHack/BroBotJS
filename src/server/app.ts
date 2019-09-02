@@ -4,6 +4,13 @@ import DiscordBot from '../discordBot/DiscordBot'
 import { getRepository } from 'typeorm';
 import { MessageLogEntry } from '../entity/MessageLogEntry';
 
+let staticDir : string
+if(!!process.env.VCAP_SERVICES) {
+  staticDir = "dist"
+} else {
+  staticDir = "build/dist"
+}
+
 let app = express()
 app.use(bodyParser.json())
 let apiRouter = express.Router()
@@ -35,7 +42,7 @@ apiRouter.get('/messageLog/:id', async (req, res) => {
   }
 })
 
-app.use('/', express.static('dist'))
+app.use('/', express.static(staticDir))
 app.use('/api', apiRouter)
 
 export default app

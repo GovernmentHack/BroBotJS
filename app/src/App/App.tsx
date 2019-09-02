@@ -1,25 +1,47 @@
-import React from "react";
-import "./App.scss";
+import React from "react"
+import "./App.scss"
+import cylon from "../resources/cylon.png"
+import Button from "@material-ui/core/Button"
+import LogContainer from "../LogContainer/LogContainer"
 
-const App: React.FC = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppState {
+  messageLog : any[]
+}
+
+class App extends React.Component<{}, IAppState> {
+  constructor(props: Readonly<{}>) {
+    super(props)
+    this.state = {
+      messageLog: []
+    }
+
+    this.getMessageLogs = this.getMessageLogs.bind(this)
+  }
+
+  async getMessageLogs(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    event.preventDefault()
+
+    return fetch("/api/messageLog")
+      .then((response) => response.json())
+      .then((json) => {
+        this.setState({
+          messageLog: json
+        })
+      })
+  }
+
+  render() {
+    return (
+      <div className="app">
+        <img src={cylon} className="app__logo" alt="logo" />
+        <Button onClick={this.getMessageLogs}> 
+          Get Recent Messages
+        </Button>
+        <LogContainer/>
+        <p>{JSON.stringify(this.state.messageLog)}</p>
+      </div>
+    )
+  }
 }
 
 export default App;

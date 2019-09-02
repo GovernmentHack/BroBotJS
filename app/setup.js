@@ -1,8 +1,6 @@
 const { configure } = require('enzyme')
-const chai = require('chai')
 const Adapter = require('enzyme-adapter-react-16')
 const { JSDOM } = require('jsdom')
-const expect = chai.expect
 const jsdom = new JSDOM('<!doctype html><html><body></body></html>');
 const { window } = jsdom;
 

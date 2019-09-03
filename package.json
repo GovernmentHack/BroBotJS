@@ -40,7 +40,6 @@
   },
   "homepage": "https://github.com/GovernmentHack/BroBotJS#readme",
   "dependencies": {
-    "@material-ui/core": "^4.4.0",
     "body-parser": "^1.19.0",
     "discord.js": "^11.5.1",
     "express": "^4.17.1",
@@ -50,6 +49,8 @@
     "typeorm": "^0.2.17"
   },
   "devDependencies": {
+    "@material-ui/core": "^4.4.0",
+    "@material-ui/icons": "^4.2.1",
     "@types/chai": "^4.1.7",
     "@types/chai-http": "^4.2.0",
     "@types/enzyme": "^3.10.3",

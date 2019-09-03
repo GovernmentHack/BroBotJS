@@ -48,8 +48,9 @@ describe("App", () => {
     expect(wrapper.find('img.app__logo').length).to.eql(1)
   })
 
-  it("displays the log view", () => {
+  it("displays the log view and gives it the logs", () => {
     expect(wrapper.find(LogContainer).length).to.eql(1)
+    expect(wrapper.find(LogContainer).first().props()["log"] ).to.eql(wrapper.state('messageLog'))
   })
 
   it("renders a 'get logs' button", () => {

@@ -37,8 +37,7 @@ class App extends React.Component<{}, IAppState> {
         <Button onClick={this.getMessageLogs}> 
           Get Recent Messages
         </Button>
-        <LogContainer/>
-        <p>{JSON.stringify(this.state.messageLog)}</p>
+        <LogContainer log={this.state.messageLog}/>
       </div>
     )
   }

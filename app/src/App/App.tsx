@@ -33,10 +33,16 @@ class App extends React.Component<{}, IAppState> {
   render() {
     return (
       <div className="app">
-        <img src={cylon} className="app__logo" alt="logo" />
-        <Button onClick={this.getMessageLogs}> 
-          Get Recent Messages
-        </Button>
+        <div className="app__header">
+          <img src={cylon} className="app__logo" alt="logo" />
+          <Button 
+            onClick={this.getMessageLogs}
+            variant="contained"
+            color="primary"
+          > 
+            Get Recent Messages
+          </Button>
+        </div>
         <LogContainer log={this.state.messageLog}/>
       </div>
     )

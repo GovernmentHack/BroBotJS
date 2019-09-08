@@ -8,7 +8,7 @@ const expect = chai.expect
 
 chai.use(chaiHttp)
 
-describe.only("app", () => {
+describe("app", () => {
   let insertSpy : SinonSpy
   let getManagerStub : SinonStub
   let createQueryBuilderStub : SinonStub

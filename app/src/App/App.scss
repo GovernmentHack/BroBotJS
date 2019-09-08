@@ -3,7 +3,7 @@
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   background-color: #282c34;
   min-height: 92vh;
   padding: 4vh;
@@ -11,17 +11,17 @@
   &__header {
     display: flex;
     flex-direction: column;
+    align-items: center;
     margin-right: 2vw;
-    flex: 0 0 auto;
+    flex: 0 1 auto;
+    max-width: 15vw;
   }
   
   &__logo {
     animation: App-logo-spin infinite 20s linear;
     pointer-events: none;
     margin: 2.2vw;
-    width: 192px;
-    display: fixed;
-    float: right;
+    width: 15vw;
   }
 }
 

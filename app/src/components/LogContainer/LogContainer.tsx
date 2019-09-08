@@ -5,6 +5,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
 import Typography from "@material-ui/core/Typography"
 import "./LogContainer.scss"
+import MessageLinks from '../MessageLinks/MessageLinks'
 
 interface ILogEntry {
   id: number;
@@ -18,7 +19,6 @@ interface ILogContainerProps {
 }
 
 const LogContainer : React.FC<ILogContainerProps> = (props) => {
-
   const logList = props.log.map((entry) => 
     <ExpansionPanel key={entry.id.toString()} className="log-container__log-entry">
       <ExpansionPanelSummary
@@ -28,6 +28,7 @@ const LogContainer : React.FC<ILogContainerProps> = (props) => {
         <Typography>{entry.messageString}</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className="log-container__log-entry__log-details">
+        <MessageLinks links={entry.messageLinks}/>
         <Typography><b>ID: </b>{entry.id}</Typography>
         <Typography><b>Trigger Message: </b>{entry.triggerMessage}</Typography>
       </ExpansionPanelDetails>

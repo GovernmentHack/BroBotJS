@@ -2,7 +2,7 @@ import React from "react"
 import "./App.scss"
 import cylon from "../resources/cylon.png"
 import Button from "@material-ui/core/Button"
-import LogContainer from "../LogContainer/LogContainer"
+import LogContainer from "../components/LogContainer/LogContainer"
 
 interface IAppState {
   messageLog : any[]

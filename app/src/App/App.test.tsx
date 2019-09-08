@@ -1,7 +1,7 @@
 import React from "react"
 import { shallow, ShallowWrapper } from "enzyme"
 import App from "./App"
-import LogContainer from "../LogContainer/LogContainer"
+import LogContainer from "../components/LogContainer/LogContainer"
 import Button from '@material-ui/core/Button'
 import chai from 'chai'
 import fetchMock from "fetch-mock"

@@ -5,11 +5,11 @@ import "./MessageLinks.scss"
 import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 
-interface IMessageLinksProps {
+export interface IMessageLinksProps {
   links?: IMessageLink[]
 }
 
-interface IMessageLink {
+export interface IMessageLink {
   key: {
     first: string;
     second: string;

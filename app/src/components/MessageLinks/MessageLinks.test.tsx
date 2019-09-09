@@ -1,48 +1,49 @@
 import React from "react"
 import { mount, ReactWrapper } from "enzyme"
 import Card from "@material-ui/core/Card"
-import MessageLinks from "./MessageLinks"
+import MessageLinks, { IMessageLink } from "./MessageLinks"
 import chai from 'chai';
 import Chip from "@material-ui/core/Chip"
+
 const expect = chai.expect
 
 describe("MessageLinks", () => {
   let wrapper : ReactWrapper
-  let links
+  let links: IMessageLink[]
 
   beforeEach(() => {
     links = [{
-      "key": {
-        "first": "test",
-        "second": "case"
+      key: {
+        first: "test",
+        second: "case"
       },
-      "nodes": [
+      nodes: [
         {
-          "weight": 1,
-          "probability": [0, 0.5],
-          "next": ""
+          weight: 1,
+          probability: [0, 0.5],
+          next: ""
         },
         {
-          "weight": 1,
-          "probability": [0.5, 1],
-          "next": "other"
+          weight: 1,
+          probability: [0.5, 1],
+          next: "other"
         }
       ],
-      "weightTotal": 2
+      weightTotal: 2
     },
     {
-      "key": {
-        "first": "case",
-        "second": ""
+      key: {
+        first: "case",
+        second: ""
       },
-      "nodes": [
+      nodes: [
         {
-          "weight": 1,
-          "probability": [0, 1],
-          "next": ""
+          weight: 1,
+          probability: [0, 1],
+          next: ""
         }
       ],
-      "weightTotal": 1
+      weightTotal: 1
     }]
     wrapper = mount(<MessageLinks links={links}/>)
   })

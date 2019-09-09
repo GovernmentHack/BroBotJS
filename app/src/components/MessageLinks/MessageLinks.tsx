@@ -50,7 +50,7 @@ const MessageLinks : React.FC<IMessageLinksProps> = (props) => {
       >
         <div className="message-links__link-header">
           <Typography>{link.key.first}</Typography>
-          <Typography color="textSecondary">{link.key.second}</Typography>
+          <Typography color="textSecondary">{!!link.key.second ? link.key.second : "<null>"}</Typography>
         </div>
         <div className="message-links__link-body" >
           {nodes}

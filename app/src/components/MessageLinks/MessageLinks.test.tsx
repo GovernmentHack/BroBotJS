@@ -54,6 +54,11 @@ describe("MessageLinks", () => {
     expect(wrapper.find(Card).first().text()).to.include("testcase")
     expect(wrapper.find(Card).last().text()).to.include("case")
   })
+  it("Renders '<null>' in place of null part of link key", () => {
+    links[0].key.second = ""
+    wrapper = mount(<MessageLinks links={links}/>)
+    expect(wrapper.find(".message-links__link-header").first().text()).to.include("test<null>")
+  })
   describe("Nodes", () => {
     it("Renders chips for the next nodes", () => {
       expect(wrapper.find(Card).first().find(Chip).length).to.eql(2)

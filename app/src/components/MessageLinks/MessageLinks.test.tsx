@@ -68,4 +68,8 @@ describe("MessageLinks", () => {
       expect(wrapper.find(Card).last().find(Chip).first().text()).to.include("100%")
     })
   })
+  it("renders even without links", () => {
+    wrapper = mount(<MessageLinks />)
+    expect(wrapper.find("div.message-links").length).to.eql(1)
+  })
 })

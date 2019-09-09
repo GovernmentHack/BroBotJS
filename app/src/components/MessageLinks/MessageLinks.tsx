@@ -6,7 +6,7 @@ import Chip from '@material-ui/core/Chip'
 import Avatar from '@material-ui/core/Avatar'
 
 interface IMessageLinksProps {
-  links : IMessageLink[]
+  links?: IMessageLink[]
 }
 
 interface IMessageLink {
@@ -23,6 +23,10 @@ interface IMessageLink {
 }
 
 const MessageLinks : React.FC<IMessageLinksProps> = (props) => {
+  if (!props.links) {
+    return (<div className="message-links"></div>)
+  }
+
   const links = props.links.map((link) => {
     const nodes = link.nodes.map((node) => {
       const probability = 
@@ -33,6 +37,7 @@ const MessageLinks : React.FC<IMessageLinksProps> = (props) => {
           key={node.next}
           label={!!node.next ? node.next : "<null>"}
           avatar={<Avatar>{`${probability}%`}</Avatar>}
+          className="message-links__link-node"
         />
       )
     }

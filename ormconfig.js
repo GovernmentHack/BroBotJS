@@ -50,13 +50,13 @@ else {
       "charset": "utf8mb4",
       "insecureAuth": true,
       "entities": [
-         "build/src/entity/**/*{.js,.ts}",
+         "src/entity/**/*{.js,.ts}",
       ],
       "migrations": [
-         "build/src/migration/**/*{.js,.ts}",
+         "src/migration/**/*{.js,.ts}",
       ],
       "subscribers": [
-         "build/src/migration/**/*{.js,.ts}"
+         "src/migration/**/*{.js,.ts}"
       ],
       "cli": {
          "entitiesDir": "src/entity",

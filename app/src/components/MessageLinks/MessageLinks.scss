@@ -22,11 +22,15 @@
   
   &__link-body {
     align-items: flex-start;
-    max-height: 72px;
+    max-height: 50vh;
+    padding-right: 16px;
     overflow-y: auto;
     overflow-x: hidden;
     display: flex;
     flex-direction: column;
-    scrollbar-width: none;
+  }
+
+  &__link-node {
+    margin-bottom: 4px;
   }
 }

@@ -1,9 +1,9 @@
 import chai from 'chai'
 import fs from 'fs'
-import DiscordBot from '../../src/discordBot/DiscordBot'
+import DiscordBot from './DiscordBot'
 import sinon, { SinonStub, SinonSandbox, SinonFakeTimers } from 'sinon'
 import { TextChannel, Collection, Message, User } from 'discord.js';
-import MockGenerator from './mockGenerator';
+import MockGenerator from '../testResources/MockGenerator';
 
 const expect = chai.expect
 const mockGenerator = new MockGenerator()
@@ -37,7 +37,7 @@ describe("DiscordBot", () => {
     const setChainFromFileSpy = sinon.spy(bot, "setChainFromFile")
     const loginStub = sinon.stub(bot.client, "login")
 
-    const exampleVocabulary = require('./exampleVocabulary.json')
+    const exampleVocabulary = require("../testResources/exampleVocabulary.json")
     fs.writeFileSync(VOCABULARY_FILE, JSON.stringify(exampleVocabulary))
 
     bot.login()

@@ -1,6 +1,6 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import app from '../../src/server/app'
+import app from './app'
 import sinon, { SinonSandbox, SinonFakeTimers, SinonSpy, SinonStub } from 'sinon'
 
 const typeorm = require("typeorm")

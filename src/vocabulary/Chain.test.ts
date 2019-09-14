@@ -1,7 +1,7 @@
 import { Collection, Message } from "discord.js"
-import MockGenerator from "../discordBot/MockGenerator"
-import Chain from '../../src/vocabulary/Chain'
-import Link, { ILinkKey } from '../../src/vocabulary/Link'
+import MockGenerator from "../testResources/MockGenerator"
+import Chain from './Chain'
+import Link, { ILinkKey } from './Link'
 import chai from 'chai'
 
 const expect = chai.expect
@@ -30,7 +30,7 @@ describe("Chain", () => {
     })
 
     it("Can initialize with full chain from parameters", () => {
-      const exampleJSON = require("./exampleChain.json")
+      const exampleJSON = require("../testResources/exampleChain.json")
 
       chain = new Chain(exampleJSON.links, exampleJSON.startingLinks)
 
@@ -204,7 +204,7 @@ describe("Chain", () => {
       chain.parseSentence(sentenceToParse)
       chain.updateProbabilities()
 
-      const expectedJSON = require("./exampleChain.json")
+      const expectedJSON = require("../testResources/exampleChain.json")
 
       const actualJSON = chain.toJSON()
 

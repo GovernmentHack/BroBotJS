@@ -1,7 +1,9 @@
 import chai from 'chai'
-import Link, { ILinkNode } from '../../src/vocabulary/Link'
+import Link, { ILinkNode } from './Link'
 
 const expect = chai.expect
+
+const exampleLink = require("../testResources/exampleLink.json")
 
 describe("Link", () => {
   let link : Link
@@ -37,7 +39,6 @@ describe("Link", () => {
     })
 
     it("can initialize with nodes if provided", () => {
-      const exampleLink = require("./exampleLink.json")
       link = new Link(exampleLink.key, exampleLink.nodes, exampleLink.weightTotal)
       expect(link.key).to.eql({first: "first", second: "second"})
       expect(link.nodes.size).to.eql(2)
@@ -111,7 +112,7 @@ describe("Link", () => {
     it("returns JSON object of itself", () => {
       link.updateNodeProbabilities()
 
-      const expectedLink = require("./exampleLink.json")
+      const expectedLink = exampleLink
 
       const actualLink = link.toJSON()
 

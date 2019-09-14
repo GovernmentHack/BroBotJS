@@ -1,4 +1,4 @@
-import DiscordBot from "./discordBot";
+import DiscordBot from "../DiscordBot";
 
 const onReadyHandler = (bot : DiscordBot) => {
   if (!!bot.client.user) { 

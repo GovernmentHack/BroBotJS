@@ -1,7 +1,7 @@
 import { Message, TextChannel } from "discord.js";
-import DiscordBot, { IIngestChannelMessagesOutput } from "./discordBot";
+import DiscordBot, { IIngestChannelMessagesOutput } from "../DiscordBot";
 import { getRepository } from "typeorm";
-import { MessageLogEntry } from "../entity/MessageLogEntry";
+import { MessageLogEntry } from "../../entity/MessageLogEntry";
 
 enum Command {
   INVALID,

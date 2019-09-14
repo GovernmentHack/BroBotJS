@@ -1,9 +1,9 @@
 import sinon, { SinonSpy, SinonStub} from 'sinon'
 import chai from 'chai'
-import onMessageHandler from '../../src/discordBot/onMessageHandler'
+import onMessageHandler from './onMessageHandler'
 import { Message } from 'discord.js'
-import MockGenerator from './MockGenerator'
-import DiscordBot from '../../src/discordBot/DiscordBot'
+import MockGenerator from '../../testResources/MockGenerator'
+import DiscordBot from '../DiscordBot'
 
 const typeorm = require("typeorm")
 

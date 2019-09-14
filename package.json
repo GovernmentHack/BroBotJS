@@ -25,7 +25,7 @@
     "start-dev": "npm run build:live",
     "start-frontend": "webpack-dev-server --mode development --open --hot",
     "test": "npm run test:frontend && npm run test:backend",
-    "test:backend": "cross-env VOCABULARY_FILE=./testVocabulary.json ts-mocha -p tsconfig.json test/**/*.test.ts --exit",
+    "test:backend": "cross-env VOCABULARY_FILE=./testVocabulary.json ts-mocha -p tsconfig.json src/**/*.test.ts --exit",
     "test:frontend": "ts-mocha -p ./tsconfig.app.json app/**/*.test.{ts,tsx} --require ignore-styles --require ./app/setup.js --exit",
     "test:watch": "cross-env VOCABULARY_FILE=./testVocabulary.json ts-mocha -p tsconfig.json test/**/*.test.ts --watch --watch-extensions ts"
   },

@@ -1,8 +1,8 @@
 import Discord, { Client, TextChannel, Collection, Message, Channel } from 'discord.js'
 import fs from 'fs'
 import * as secret from '../../token.json'
-import onMessageHandler from './onMessageHandler'
-import onReadyHandler from './onReadyHandler'
+import onMessageHandler from './discordEventHandlers/onMessageHandler'
+import onReadyHandler from './discordEventHandlers/onReadyHandler'
 import Chain from '../vocabulary/Chain'
 
 const VOCABULARY_FILE = process.env.VOCABULARY_FILE? process.env.VOCABULARY_FILE : './vocabulary.json' 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { sankeyLinkHorizontal, SankeyNode, SankeyLink, SankeyLayout, sankey, sankeyLeft} from "d3-sankey"
+import { SankeyNode, SankeyLink, SankeyLayout, sankeyCircular, sankeyLeft} from "d3-sankey-circular"
 import "./MessageLinks.scss"
 
 export interface IMessageLinksProps {
@@ -71,20 +71,29 @@ export const getDataFromLinks = (links: IMessageLink[]) : DAG => {
 
 const SankeyNode : React.FC<any> = ({ name, x0, x1, y0, y1, color }) => (
   <rect x={x0} y={y0} width={x1 - x0} height={y1 - y0} fill={color}>
-    <title>{name}</title>
+    <title>{name ? name : "<null>"}</title>
   </rect>
 )
 
 const SankeyLink : React.FC<any> = ({ link }) => (
-  <path
-    d={sankeyLinkHorizontal()(link)}
+  <g
     className="message-links__link"
-    style={{
-      fill: 'none',
-      // strokeOpacity: .3,
-      strokeWidth: Math.max(1, link.width),
-    }}
-  />
+  >
+    <path
+      d={link.path}
+      style={{
+        fill: 'none',
+        strokeWidth: Math.max(1, link.width),
+      }}
+    />
+    <text 
+      x={link.target.x0 - 64}
+      y={(link.target.y1 - link.target.y0) / 2 + link.target.y0}
+      className="message-links__link__label"  
+    >
+      {`${(link.probability * 100).toFixed(2)}%`}
+    </text>
+  </g>
 )
 
 const NodeLabel : React.FC<any> = ({ name, x0, x1, y0, y1, color }) => (
@@ -104,13 +113,13 @@ const MessageLinks : React.FC<IMessageLinksProps> = (props) => {
 
   let data: DAG = getDataFromLinks(props.links)
 
-  const height = data.links.reduce((accumulator, link) => accumulator + link.value, 0) * 16
-  const width = props.links.length * 128
+  const height = data.links.reduce((accumulator, link) => accumulator + link.value, 16) * 16
+  const width = (props.links.length + 1) * 128
 
-  const generator : SankeyLayout<DAG , ICustomNode, ICustomLink> = sankey<DAG , ICustomNode, ICustomLink>()
+  const generator : SankeyLayout<DAG , ICustomNode, ICustomLink> = sankeyCircular<DAG, ICustomNode, ICustomLink>()
     .nodeWidth(15)
     .nodePadding(10)
-    .nodeId((node) => node.name)
+    .nodeId((node: ICustomNode) => node.name)
     .nodeAlign(sankeyLeft)
     .size([width, height])
 
@@ -120,20 +129,20 @@ const MessageLinks : React.FC<IMessageLinksProps> = (props) => {
     <div className="message-links">
       <svg height={height} width={width + 64}>
         <g style={{ mixBlendMode: 'multiply' }}>
-          {nodes.map((node, i) => (
+          {nodes.map((node: ICustomNode) => (
             <SankeyNode
               {...node}
               color={"#333333"}
               key={node.name}
             />
           ))}
-          {links.map((link, i) => (
+          {links.map((link: ICustomLink, i: number) => (
             <SankeyLink
               link={link}
-              key={i.toString()}
+              key={`${link.source}-${link.target}-${i}`}
             />
           ))}
-          {nodes.map((node, i) => (
+          {nodes.map((node: ICustomNode) => (
             <NodeLabel
               {...node}
               key={`${node.name}-label`}

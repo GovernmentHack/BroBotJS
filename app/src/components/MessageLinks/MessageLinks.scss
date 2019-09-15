@@ -5,9 +5,28 @@
   overflow: auto;
 
   &__link {
-    stroke: #aaaaaa;
+    &__label {
+      z-index: 1000;
+    }
+
+    path {
+      stroke: #aaaaaa;
+      z-index: 100;
+      opacity: 0.5;
+    }
+
+    & &__label {
+      opacity: 0;
+    }
+
     &:hover {
-      stroke: #666666;
+      path {
+        stroke: #666666;
+      } 
+    }
+
+    &:hover &__label {
+      opacity: 1;
     }
   }
 

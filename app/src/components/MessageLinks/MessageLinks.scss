@@ -1,36 +1,17 @@
 .message-links {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
   padding: 8px;
-  overflow: auto;
   flex: 0 1 auto;
   max-width: 75vw;
-  scrollbar-width: none;
-  
+  overflow: auto;
+
   &__link {
-    padding: 8px;
-    flex: 0 0 auto;
-    margin-right: 2px;
-  }
-  
-  &__link-header {
-    display: flex;
-    flex-direction: row;
-    flex: 0 0 auto;
-  }
-  
-  &__link-body {
-    align-items: flex-start;
-    max-height: 50vh;
-    padding-right: 16px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    display: flex;
-    flex-direction: column;
+    stroke: #aaaaaa;
+    &:hover {
+      stroke: #666666;
+    }
   }
 
-  &__link-node {
-    margin-bottom: 4px;
+  &__label {
+    z-index: 1000;
   }
 }

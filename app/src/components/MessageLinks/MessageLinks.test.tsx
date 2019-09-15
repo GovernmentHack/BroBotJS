@@ -1,9 +1,7 @@
 import React from "react"
 import { mount, ReactWrapper } from "enzyme"
-import Card from "@material-ui/core/Card"
-import MessageLinks, { IMessageLink } from "./MessageLinks"
+import MessageLinks, { IMessageLink, getDataFromLinks } from "./MessageLinks"
 import chai from 'chai';
-import Chip from "@material-ui/core/Chip"
 
 const expect = chai.expect
 
@@ -45,37 +43,224 @@ describe("MessageLinks", () => {
       ],
       weightTotal: 1
     }]
-    wrapper = mount(<MessageLinks links={links}/>)
   })
 
-  it("Renders a card for each Link", () => {
-    expect(wrapper.find(Card).length).to.eql(2)
-  })
-  it("Renders the key test within the card", () => {
-    expect(wrapper.find(Card).first().text()).to.include("testcase")
-    expect(wrapper.find(Card).last().text()).to.include("case")
-  })
-  it("Renders '<null>' in place of null part of link key", () => {
-    links[0].key.second = ""
-    wrapper = mount(<MessageLinks links={links}/>)
-    expect(wrapper.find(".message-links__link-header").first().text()).to.include("test<null>")
-  })
-  describe("Nodes", () => {
-    it("Renders chips for the next nodes", () => {
-      expect(wrapper.find(Card).first().find(Chip).length).to.eql(2)
-      expect(wrapper.find(Card).last().find(Chip).length).to.eql(1)
+  describe("getDataFromLinks", () => {
+    it("with a link of length 1 and two null values", () => {
+      links = [{
+        key: {
+          first: "test",
+          second: ""
+        },
+        nodes: [
+          {
+            weight: 1,
+            probability: [0, 1],
+            next: ""
+          },
+        ],
+        weightTotal: 1
+      }]
+      const expectedData = {
+        nodes: [
+          { name: "test"},
+          { name: ""},
+        ],
+        links: [
+          {
+            source: "test",
+            target: "",
+            value: 1,
+            probability: 1
+          }
+        ]
+      }
+
+      const actualData = getDataFromLinks(links)
+      expect(actualData).to.eql(expectedData)
     })
-    it("Chips have next as label, and precentages", () => {
-      expect(wrapper.find(Card).first().find(Chip).first().text()).to.include("<null>")
-      expect(wrapper.find(Card).first().find(Chip).first().text()).to.include("50%")
-      expect(wrapper.find(Card).first().find(Chip).last().text()).to.include("other")
-      expect(wrapper.find(Card).first().find(Chip).last().text()).to.include("50%")
-      expect(wrapper.find(Card).last().find(Chip).first().text()).to.include("<null>")
-      expect(wrapper.find(Card).last().find(Chip).first().text()).to.include("100%")
+
+    it("with a link of length 1 and one null value", () => {
+      links = [{
+        key: {
+          first: "test",
+          second: "case"
+        },
+        nodes: [
+          {
+            weight: 1,
+            probability: [0, 1],
+            next: ""
+          },
+        ],
+        weightTotal: 1
+      }]
+      const expectedData = {
+        nodes: [
+          { name: "test"},
+          { name: "case"},
+          { name: ""},
+        ],
+        links: [
+          {
+            source: "test",
+            target: "case",
+            value: 1,
+            probability: 1
+          },
+          {
+            source: "case",
+            target: "",
+            value: 1,
+            probability: 1
+          },
+        ]
+      }
+
+      const actualData = getDataFromLinks(links)
+      expect(actualData).to.eql(expectedData)
     })
+
+    it("with a link of length 1 that has multiple nodes", () => {
+      links = [{
+        key: {
+          first: "test",
+          second: "case"
+        },
+        nodes: [
+          {
+            weight: 1,
+            probability: [0, 0.25],
+            next: "else"
+          },
+          {
+            weight: 3,
+            probability: [0.25, 1],
+            next: ""
+          },
+        ],
+        weightTotal: 4
+      }]
+      const expectedData = {
+        nodes: [
+          { name: "test"},
+          { name: "case"},
+          { name: "else"},
+          { name: ""},
+        ],
+        links: [
+          {
+            source: "test",
+            target: "case",
+            value: 1,
+            probability: 1
+          },
+          {
+            source: "case",
+            target: "else",
+            value: 1,
+            probability: 0.25
+          },
+          {
+            source: "case",
+            target: "",
+            value: 3,
+            probability: 0.75
+          },
+        ]
+      }
+
+      const actualData = getDataFromLinks(links)
+      expect(actualData).to.eql(expectedData)
+    })
+
+    it("with a link of length of 2 that has multiple nodes", () => {
+      links = [{
+        key: {
+          first: "test",
+          second: "case"
+        },
+        nodes: [
+          {
+            weight: 1,
+            probability: [0, 0.25],
+            next: "else"
+          },
+          {
+            weight: 3,
+            probability: [0.25, 1],
+            next: ""
+          },
+        ],
+        weightTotal: 4
+      },
+      {
+        key: {
+          first: "case",
+          second: "else"
+        },
+        nodes: [
+          {
+            weight: 1,
+            probability: [0, 1],
+            next: ""
+          },
+        ],
+        weightTotal: 1
+      }]
+      const expectedData = {
+        nodes: [
+          { name: "test"},
+          { name: "case"},
+          { name: "else"},
+          { name: ""},
+        ],
+        links: [
+          {
+            source: "test",
+            target: "case",
+            value: 1,
+            probability: 1
+          },
+          {
+            source: "case",
+            target: "else",
+            value: 1,
+            probability: 0.25
+          },
+          {
+            source: "case",
+            target: "",
+            value: 3,
+            probability: 0.75
+          },
+          {
+            source: "else",
+            target: "",
+            value: 1,
+            probability: 1
+          },
+        ]
+      }
+
+      const actualData = getDataFromLinks(links)
+      expect(actualData).to.eql(expectedData)
+    })
+    
   })
+
   it("renders even without links", () => {
     wrapper = mount(<MessageLinks />)
-    expect(wrapper.find("div.message-links").length).to.eql(1)
+    expect(wrapper.find("div.message-links-empty").length).to.eql(1)
+  })
+
+  it("renders with link length of 0", () => {
+    wrapper = mount(<MessageLinks links={[]}/>)
+    expect(wrapper.find("div.message-links-empty").length).to.eql(1)
+  })
+
+  it("renders the SVG when links present", () => {
+    wrapper = mount(<MessageLinks links={links}/>)
+    expect(wrapper.find("svg").length).to.eql(1)
   })
 })
